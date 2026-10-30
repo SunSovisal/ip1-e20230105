@@ -1,0 +1,12 @@
+# Decisions
+
+One line per real design choice. Add a line when the choice changes the code or the spec, not when it is only a preference.
+
+- 2026-10-26: Helpdesk tickets as the domain: clear requester / agent / admin split and a main entity (Ticket) with comments and assignment.
+- 2026-10-26: Three roles (REQUESTER, AGENT, ADMIN) instead of two: admin is agent plus permanent ticket delete, matching the course “at least 2 roles” rule without inventing a fourth role.
+- 2026-10-28: Seeded login is `{studentId}@gmail.com` with the student id as the first password; `mustChangePassword` blocks the rest of the app until `POST /auth/change-password` succeeds. Register stays for visitors who pick their own password.
+- 2026-10-28: Wireframes live as Excalidraw (and an HTML preview) in `docs/wireframes/`, not only as Figma: editable in the repo, no account required for the teacher to open the source.
+- 2026-10-28: No separate admin layout. Agent and admin share the inbox shell; admin-only actions (permanent delete) appear on the same ticket screen.
+- 2026-10-29: Optional `area` on a ticket (for example J609) as a place label, separate from the category tree and the tag tree.
+- 2026-10-29: Props down, events up for screen components. The view owns the list; cards and tables only receive props and emit events (`docs/components.md`).
+- 2026-10-30: First static screen uses mock tickets in `src/mock/` and a typed `Ticket` in `src/types/`. No API and no Pinia store yet; Check 2 adds routes and stores.
