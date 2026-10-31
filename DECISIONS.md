@@ -9,4 +9,6 @@ One line per real design choice. Add a line when the choice changes the code or 
 - 2026-10-28: No separate admin layout. Agent and admin share the inbox shell; admin-only actions (permanent delete) appear on the same ticket screen.
 - 2026-10-29: Optional `area` on a ticket (for example J609) as a place label, separate from the category tree and the tag tree.
 - 2026-10-29: Props down, events up for screen components. The view owns the list; cards and tables only receive props and emit events (`docs/components.md`).
-- 2026-10-30: First static screen uses mock tickets in `src/mock/` and a typed `Ticket` in `src/types/`. No API and no Pinia store yet; Check 2 adds routes and stores.
+- 2026-10-30: First static screen uses mock tickets in `src/mock/` and a typed `Ticket` in `src/types/`. No API and no Pinia store yet; M1 adds routes, Pinia, and a mock service layer.
+- 2026-10-31: Follow the new milestone guideline (M0–M5): `PROPOSAL.md` + `MILESTONES.md` instead of `AI_LOG.md` / `CHECK.md`. Folder names and every checklist item are not mandatory.
+- 2026-10-31: Stretch feature is search, filter and pagination on ticket lists. Activity log and ticket image stay nice-to-have for the proposal MVP split.
