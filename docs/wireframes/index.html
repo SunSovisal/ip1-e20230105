@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Helpdesk wireframes</title>
+  <style>
+    :root {
+      --ink: #111;
+      --muted: #444;
+      --line: #bbb;
+      --line-strong: #111;
+      --paper: #fff;
+      --app: #fff;
+      --sheet: #fff;
+      --soft: #f2f2f2;
+      --fill: #e6e6e6;
+    }
+
+    * { box-sizing: border-box; border-radius: 0; }
+    html, body { margin: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.4 Arial, Helvetica, sans-serif;
+    }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    h1, h2, p { margin: 0; }
+
+    .deck { max-width: 1180px; margin: 0 auto; padding: 18px 20px 48px; }
+    .deck-head {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--paper);
+      padding-bottom: 12px;
+    }
+    .deck-bar { display: flex; align-items: flex-end; gap: 16px; }
+    .deck-title { font-size: 13px; color: var(--muted); }
+    .deck-title strong { display: block; color: var(--ink); font-size: 20px; font-weight: 700; }
+    .deck-meta { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .counter { min-width: 64px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .nav-btn, .tool {
+      border: 1px solid var(--line-strong);
+      background: var(--sheet);
+      padding: 6px 10px;
+    }
+    .nav-btn { min-width: 88px; }
+    .hint { color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .nav-chip {
+      border: 1px solid var(--ink);
+      background: #fff;
+      padding: 6px 10px;
+      color: var(--ink);
+    }
+    .nav-chip[aria-current="true"] { background: var(--ink); color: #fff; }
+
+    .screen { display: none; }
+    .screen.is-on { display: block; }
+    .role-line { margin: 14px 0 8px; color: var(--muted); font-size: 13px; }
+    .role-line b { color: var(--ink); font-weight: 700; }
+
+    .frame {
+      position: relative;
+      background: var(--app);
+      border: 2px solid var(--ink);
+      min-height: 680px;
+      display: flex;
+      flex-direction: column;
+    }
+    .topnav {
+      height: 52px;
+      background: var(--sheet);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 16px;
+    }
+    .brand { font-weight: 700; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links button, .side button, .ghost, .texty {
+      border: 0;
+      background: transparent;
+    }
+    .nav-links button { padding: 6px 8px; color: var(--muted); border-bottom: 2px solid transparent; }
+    .nav-links button.on { color: var(--ink); font-weight: 700; border-bottom-color: var(--ink); }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+    .mid { flex: 1; display: flex; min-height: 0; }
+    .side {
+      width: 196px;
+      padding: 14px 10px;
+      flex: none;
+    }
+    .side button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .side button.on { background: var(--fill); font-weight: 700; border: 1px solid var(--ink); }
+    .sheet {
+      flex: 1;
+      background: var(--sheet);
+      margin: 16px 16px 16px 0;
+      border: 1px solid var(--line);
+      padding: 22px 22px 28px;
+      min-width: 0;
+    }
+    .requester .sheet { margin: 16px; }
+    .foot {
+      height: 40px;
+      background: var(--sheet);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sheet-top, .row, .spread, .pager, .actions, .tcard-top, .tcard-foot, .tcard-meta, .comment header, .screen-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sheet-top { align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .spread { justify-content: space-between; }
+    h1 { font-size: 22px; font-weight: 700; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .switch { display: flex; gap: 14px; margin-top: 12px; }
+    .switch button {
+      border: 0;
+      background: transparent;
+      padding: 4px 0;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+    }
+    .switch button.on { color: var(--ink); border-bottom-color: var(--ink); font-weight: 700; }
+    .btn, .pri {
+      border: 1px solid var(--line-strong);
+      background: var(--sheet);
+      padding: 7px 12px;
+    }
+    .pri { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .btn.small, .pri.small { padding: 4px 8px; font-size: 13px; }
+
+    .filters { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+    .field { min-width: 0; }
+    .lbl { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .ctrl {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      min-height: 36px;
+      padding: 7px 10px;
+    }
+    .ctrl.area { min-height: 88px; }
+    .help, .err, .muted { color: var(--muted); }
+    .help, .err { font-size: 12px; margin-top: 4px; }
+    .bad .ctrl { border-color: var(--ink); border-width: 1.5px; }
+    .stack { display: grid; gap: 12px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .segs { display: flex; }
+    .segs span, .tickrow {
+      border: 1px solid var(--line-strong);
+      padding: 7px 12px;
+      background: #fff;
+    }
+    .segs span + span { margin-left: -1px; }
+    .segs .on { background: var(--fill); font-weight: 700; }
+    .listbox { border: 1px solid var(--line-strong); background: #fff; }
+    .listbox div { padding: 7px 10px; border-bottom: 1px solid var(--line); }
+    .listbox div:last-child { border-bottom: 0; }
+    .listbox .sel { background: var(--fill); font-weight: 700; }
+    .indent { padding-left: 22px !important; }
+    .checks { display: grid; gap: 6px; }
+    .checks div { display: flex; gap: 8px; align-items: center; }
+    .box {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--ink);
+      display: inline-block;
+      background: #fff;
+    }
+    .box.on { background: var(--ink); }
+    .banner, .msg {
+      border: 1px solid var(--line-strong);
+      background: var(--soft);
+      padding: 8px 10px;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+    .file { display: flex; justify-content: space-between; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; font-weight: 700; }
+    tr[data-go] { cursor: pointer; }
+    .pager { justify-content: flex-end; margin-top: 12px; color: var(--muted); font-size: 13px; }
+    .pager .btn[disabled] { opacity: 0.4; cursor: default; }
+
+    .caption { color: var(--muted); font-size: 13px; margin-top: 12px; }
+    .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; align-items: start; }
+    .col-h {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--soft);
+      border: 1px solid var(--ink);
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .count { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .tcard {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .tcard-title { font-weight: 700; margin: 6px 0; font-size: 14px; }
+    .tcard-top, .tcard-foot, .tcard-meta { justify-content: space-between; font-size: 12px; color: var(--muted); }
+    .tcard-meta { margin: 8px 0; }
+    .chip {
+      display: inline-block;
+      border: 1px solid var(--ink);
+      background: var(--soft);
+      padding: 1px 6px;
+      color: var(--ink);
+    }
+    .pri-word { color: var(--ink); font-weight: 700; }
+    .more { font-size: 12px; color: var(--muted); margin: 4px 2px 0; }
+
+    .meta { display: grid; grid-template-columns: 120px 1fr; gap: 6px 12px; margin: 14px 0; font-size: 14px; }
+    .k { color: var(--muted); }
+    .prose { max-width: 62ch; margin: 8px 0 12px; }
+    .ph {
+      height: 92px;
+      border: 1px dashed var(--line-strong);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: var(--soft);
+      margin: 8px 0 14px;
+    }
+    .comment { border-top: 1px solid var(--line); padding: 10px 0; }
+    .comment header { justify-content: space-between; font-size: 13px; }
+    .comment p { margin-top: 6px; }
+    .comment.internal { border-left: 3px solid var(--ink); padding-left: 10px; }
+    .tag {
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--ink);
+      padding: 1px 5px;
+    }
+    .composer { margin-top: 8px; display: grid; gap: 8px; justify-items: start; }
+    .actions { align-items: flex-end; flex-wrap: wrap; gap: 10px; margin: 8px 0 16px; }
+    .actions .field { width: 220px; }
+    .danger { border-width: 2px; border-color: var(--ink); font-weight: 700; }
+
+    .tree { display: grid; gap: 4px; margin-top: 8px; }
+    .node, .node-row { display: flex; align-items: center; gap: 8px; }
+    .node { padding: 6px 8px; border: 1px solid transparent; }
+    .node.sel { border-color: var(--line-strong); background: var(--soft); }
+    .child { margin-left: 18px; }
+    .refusal { margin-top: 10px; }
+
+    .auth-wrap, .plain-wrap { flex: 1; display: grid; place-items: center; padding: 32px 16px; }
+    .auth { width: min(420px, 100%); margin: 0; padding: 28px 24px; }
+    .auth h1 { margin-bottom: 16px; }
+    .auth .stack { margin-bottom: 14px; }
+    .linkish { border: 0; background: transparent; padding: 0; text-decoration: underline; color: var(--ink); }
+
+    .modal-back {
+      position: absolute;
+      inset: 0;
+      background: rgba(28, 28, 28, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 72px 20px 20px;
+    }
+    .modal-back[hidden] { display: none; }
+    .modal { width: min(440px, 100%); background: #fff; border: 1px solid var(--ink); padding: 18px; }
+    .modal h2 { font-size: 18px; margin-bottom: 8px; }
+    .modal p { margin-bottom: 14px; }
+    .modal .row { justify-content: flex-end; }
+
+    .screen[data-view="agent"] .admin-only { display: none; }
+    .screen[data-view="admin"] .agent-only { display: none; }
+    .screen-tools { gap: 8px; margin-top: 12px; }
+    .screen-tools .tool[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .notes { margin: 12px 0 0; padding-left: 18px; color: var(--ink); }
+    .notes li { margin: 4px 0; }
+    .notes li::marker { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <header class="deck-head">
+      <div class="deck-bar">
+        <div class="deck-title">
+          Wireframe
+          <strong id="screen-title">Sign in</strong>
+        </div>
+        <div class="deck-meta">
+          <button class="nav-btn" id="prev" type="button">Previous</button>
+          <div class="counter" id="counter">1 / 13</div>
+          <button class="nav-btn" id="next" type="button">Next</button>
+        </div>
+      </div>
+      <p class="hint">Arrow keys change the screen. A control inside a screen opens the related one.</p>
+      <div class="chips" id="chips"></div>
+    </header>
+
+    <article class="screen is-on" id="sign-in" data-title="Sign in" data-role="Shared">
+      <p class="role-line">Role <b>Shared</b> · visitor</p>
+      <div class="frame">
+        <div class="auth-wrap">
+          <div class="sheet auth">
+            <div class="brand">Helpdesk</div>
+            <h1 style="margin-top:14px">Sign in</h1>
+            <div class="stack" style="margin-top:16px">
+              <div class="field">
+                <div class="lbl">Email</div>
+                <div class="ctrl">e20230105@gmail.com</div>
+              </div>
+              <div class="field">
+                <div class="lbl">Password</div>
+                <div class="ctrl">e20230105</div>
+              </div>
+            </div>
+            <button class="pri" type="button" data-go="change-password">Sign in</button>
+            <p class="caption">The preset password is the student id. A wrong password or an unknown email stays on this screen and says “Email or password is wrong.”</p>
+            <p class="sub" style="margin-top:14px">No account? <button class="linkish" type="button" data-go="register">Register</button></p>
+          </div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li>A seeded account signs in with e20230105@gmail.com and password e20230105. A correct sign-in returns a JWT and opens Change password.</li>
+        <li>A wrong password or an unknown email keeps the person here, without saying which one failed.</li>
+        <li>Any app page opened while signed out returns to this screen.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="change-password" data-title="Change password" data-role="Seeded account">
+      <p class="role-line">Role <b>Whoever just used a preset password</b> · e20230105</p>
+      <div class="frame">
+        <div class="auth-wrap">
+          <div class="sheet auth">
+            <div class="brand">Helpdesk</div>
+            <h1 style="margin-top:14px">Choose a new password</h1>
+            <p class="sub" style="margin-top:8px">Signed in as e20230105@gmail.com. The rest of the app stays closed until this is saved.</p>
+            <div class="stack" style="margin-top:16px">
+              <div class="field">
+                <div class="lbl">New password</div>
+                <div class="ctrl">••••••••</div>
+                <div class="help">It cannot be your student id.</div>
+              </div>
+              <div class="field bad">
+                <div class="lbl">Confirm password</div>
+                <div class="ctrl">••••••</div>
+                <div class="err">The two passwords do not match.</div>
+              </div>
+            </div>
+            <div class="row">
+              <button class="pri" type="button" data-go="my-tickets">Save password</button>
+              <button class="btn" type="button" data-go="sign-in">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li>Every seeded account starts this way: email is the student id at gmail.com, and the password is that same id.</li>
+        <li>Saving a different password opens the app. An agent or admin then lands on the inbox. This deck continues as the requester.</li>
+        <li>A person who registered chose their own password, so they never see this screen.</li>
+        <li>The activity log records that the password changed. It does not store the old or the new password.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="register" data-title="Register" data-role="Shared">
+      <p class="role-line">Role <b>Shared</b> · visitor</p>
+      <div class="frame">
+        <div class="auth-wrap">
+          <div class="sheet auth">
+            <div class="brand">Helpdesk</div>
+            <h1 style="margin-top:14px">Create an account</h1>
+            <div class="stack" style="margin-top:16px">
+              <div class="field">
+                <div class="lbl">Name</div>
+                <div class="ctrl">Dara Sok</div>
+              </div>
+              <div class="field bad">
+                <div class="lbl">Email</div>
+                <div class="ctrl">e20230105</div>
+                <div class="err">Enter a valid email.</div>
+              </div>
+              <div class="field">
+                <div class="lbl">Password</div>
+                <div class="ctrl">••••••••</div>
+              </div>
+            </div>
+            <button class="pri" type="button">Create account</button>
+            <p class="caption">The account is a requester. This form has no role field.</p>
+            <p class="sub" style="margin-top:14px">Already registered? <button class="linkish" type="button" data-go="sign-in">Sign in</button></p>
+          </div>
+        </div>
+      </div>
+      <ul class="notes">
+        <li>A missing field or a bad email shows the message on that field.</li>
+        <li>The password is stored hashed. The screen never shows the hash.</li>
+        <li>Agent and admin accounts come from the seed, not from this form.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="my-tickets" data-title="My tickets" data-role="Requester">
+      <p class="role-line">Role <b>Requester</b> · Dara Sok</p>
+      <div class="frame requester">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-links">
+            <button class="on" type="button" data-go="my-tickets">My tickets</button>
+            <button type="button" data-go="new-ticket">New ticket</button>
+          </div>
+          <div class="nav-right">
+            <span>Dara Sok · Requester</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <div class="sheet">
+            <div class="sheet-top">
+              <h1>My tickets</h1>
+              <button class="pri" type="button" data-go="new-ticket">New ticket</button>
+            </div>
+            <div class="filters">
+              <div class="field">
+                <div class="lbl">Search title</div>
+                <div class="ctrl"></div>
+              </div>
+              <div class="field"><div class="lbl">Status</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Priority</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Category</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Tag</div><div class="ctrl">Any</div></div>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Assignee</th></tr>
+              </thead>
+              <tbody>
+                <tr data-go="ticket-requester">
+                  <td>Cannot connect to campus Wi-Fi<br><span class="muted">#1042</span></td>
+                  <td>Hardware / Network</td>
+                  <td>High</td>
+                  <td>Open</td>
+                  <td>Unassigned</td>
+                </tr>
+                <tr>
+                  <td>Password reset loop on the portal<br><span class="muted">#1041</span></td>
+                  <td>Software / Account access</td>
+                  <td>Medium</td>
+                  <td>In progress</td>
+                  <td>Maly Chen</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pager">
+              <button class="btn small" type="button" disabled>Previous</button>
+              <span>Page 1 of 2</span>
+              <button class="btn small" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>Only this requester’s tickets. Pico Meas’s tickets are not in this list. The Wi-Fi row opens the ticket.</li>
+        <li>Search is the title, case-insensitive. A category filter includes everything under that category. A tag filter matches that exact tag.</li>
+        <li>Previous and Next are always here. An empty result is an empty state, not an error.</li>
+        <li>This shell has no inbox, categories, or activity log.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="new-ticket" data-title="New ticket" data-role="Requester">
+      <p class="role-line">Role <b>Requester</b> · Dara Sok</p>
+      <div class="frame requester">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-links">
+            <button type="button" data-go="my-tickets">My tickets</button>
+            <button class="on" type="button">New ticket</button>
+          </div>
+          <div class="nav-right">
+            <span>Dara Sok · Requester</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <div class="sheet">
+            <h1>New ticket</h1>
+            <p class="sub">It is created Open, with you as the requester and nobody assigned.</p>
+            <div class="stack" style="margin-top:16px">
+              <div class="field bad">
+                <div class="lbl">Title</div>
+                <div class="ctrl">Wi</div>
+                <div class="err">Use 3 to 120 characters.</div>
+              </div>
+              <div class="field">
+                <div class="lbl">Description</div>
+                <div class="ctrl area">The Wi-Fi drops in building A and I cannot stay connected long enough to submit work.</div>
+                <div class="help">At least 10 characters.</div>
+              </div>
+              <div class="split">
+                <div class="field">
+                  <div class="lbl">Priority</div>
+                  <div class="segs"><span>Low</span><span>Medium</span><span class="on">High</span></div>
+                </div>
+                <div class="field">
+                  <div class="lbl">Category</div>
+                  <div class="listbox">
+                    <div>Hardware</div>
+                    <div class="indent sel">Hardware / Network</div>
+                    <div>Software</div>
+                    <div class="indent">Software / Account access</div>
+                  </div>
+                  <div class="help">Laptop is inactive, so it is not listed.</div>
+                </div>
+              </div>
+              <div class="field">
+                <div class="lbl">Tags</div>
+                <div class="checks">
+                  <div><span class="box on"></span> Student / Year 1</div>
+                  <div><span class="box"></span> Student / Year 2</div>
+                </div>
+              </div>
+              <div class="field">
+                <div class="lbl">Error image, optional</div>
+                <div class="ctrl file"><span>Choose file</span><span class="muted">No file chosen</span></div>
+                <div class="help">One file. png, jpg, jpeg, or webp. At most 2 MB.</div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:16px">
+              <button class="pri" type="button">Create ticket</button>
+              <button class="btn" type="button" data-go="my-tickets">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>The short title is the field error. The ticket is not created.</li>
+        <li>The pickers list a category or tag only when that node and every parent are active.</li>
+        <li>A rejected image, or more than one file, creates no ticket.</li>
+        <li>An agent uses this same form. The new ticket still starts Open, and that agent is its requester.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="edit-ticket" data-title="Edit ticket" data-role="Requester">
+      <p class="role-line">Role <b>Requester</b> · Dara Sok · ticket #1042</p>
+      <div class="frame requester">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-links">
+            <button type="button" data-go="my-tickets">My tickets</button>
+            <button type="button" data-go="new-ticket">New ticket</button>
+          </div>
+          <div class="nav-right">
+            <span>Dara Sok · Requester</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <div class="sheet">
+            <h1>Edit ticket</h1>
+            <p class="sub">#1042 · Open</p>
+            <div class="banner">You can change this ticket while it is Open.</div>
+            <div class="stack">
+              <div class="field">
+                <div class="lbl">Title</div>
+                <div class="ctrl">Cannot connect to campus Wi-Fi</div>
+              </div>
+              <div class="field">
+                <div class="lbl">Description</div>
+                <div class="ctrl area">The campus Wi-Fi drops every few minutes in building A. Other networks are fine. It started this morning.</div>
+              </div>
+              <div class="split">
+                <div class="field">
+                  <div class="lbl">Category</div>
+                  <div class="listbox">
+                    <div>Hardware</div>
+                    <div class="indent sel">Hardware / Network</div>
+                    <div>Software</div>
+                    <div class="indent">Software / Account access</div>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="lbl">Tags</div>
+                  <div class="checks">
+                    <div><span class="box on"></span> Student / Year 1</div>
+                    <div><span class="box"></span> Student / Year 2</div>
+                  </div>
+                  <div class="help">Clearing both tags removes them. Leaving the control untouched keeps the current tags.</div>
+                </div>
+              </div>
+              <p class="caption">Image wifi-error.png stays on the ticket. It cannot be replaced or removed here.</p>
+            </div>
+            <div class="row" style="margin-top:16px">
+              <button class="pri" type="button" data-go="ticket-requester">Save</button>
+              <button class="btn" type="button" data-go="ticket-requester">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>The owner can change the title, description, category, and tags only while the status is Open.</li>
+        <li>An agent or admin uses this same form on any ticket, at any status.</li>
+        <li>A category or tag already on the ticket can stay even after it becomes inactive. Laptop would appear here only in that case.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="ticket-requester" data-title="Requester ticket" data-role="Requester">
+      <p class="role-line">Role <b>Requester</b> · own ticket #1042</p>
+      <div class="frame requester">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-links">
+            <button class="on" type="button" data-go="my-tickets">My tickets</button>
+            <button type="button" data-go="new-ticket">New ticket</button>
+          </div>
+          <div class="nav-right">
+            <span>Dara Sok · Requester</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <div class="sheet">
+            <div class="sheet-top">
+              <div>
+                <h1>Cannot connect to campus Wi-Fi</h1>
+                <p class="sub">#1042</p>
+              </div>
+              <button class="btn" type="button" data-go="edit-ticket">Edit</button>
+            </div>
+            <div class="meta">
+              <div class="k">Status</div><div>Open</div>
+              <div class="k">Priority</div><div>High</div>
+              <div class="k">Category</div><div>Hardware / Network</div>
+              <div class="k">Tags</div><div>Student / Year 1</div>
+              <div class="k">Assignee</div><div>Unassigned</div>
+            </div>
+            <p class="prose">The campus Wi-Fi drops every few minutes in building A. Other networks are fine. It started this morning.</p>
+            <div class="ph">wifi-error.png</div>
+            <h2 style="font-size:16px;margin-top:8px">Comments</h2>
+            <article class="comment">
+              <header>
+                <strong>Dara Sok</strong>
+                <span class="muted">Public · 2 hours ago</span>
+              </header>
+              <p>It fails on every floor of building A.</p>
+              <div class="row" style="margin-top:8px">
+                <button class="btn small" type="button">Edit</button>
+                <button class="btn small" type="button">Hide</button>
+              </div>
+            </article>
+            <div class="composer">
+              <div class="lbl">Public comment</div>
+              <div class="ctrl area" style="width:100%">Add what you have tried</div>
+              <button class="pri" type="button">Post</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>Edit and Hide are on this comment because the ticket is Open and no agent has replied after it.</li>
+        <li>There is no internal note, no assignee control, and no close or delete.</li>
+        <li>A hidden comment would say “Comment removed” and would not include its text.</li>
+        <li>Another requester’s ticket, or an unknown id, ends on Not found.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="inbox-board" data-title="Inbox" data-role="Agent">
+      <p class="role-line">Role <b>Agent and admin</b> · Maly Chen</p>
+      <div class="frame">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-right">
+            <span>Maly Chen · Agent</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <aside class="side">
+            <button class="on" type="button" data-go="inbox-board">Inbox</button>
+            <button type="button" data-go="catalog">Categories &amp; tags</button>
+            <button type="button" data-go="activity">Activity log</button>
+          </aside>
+          <div class="sheet">
+            <div class="sheet-top">
+              <div>
+                <h1>Inbox</h1>
+                <div class="switch">
+                  <button type="button" data-go="inbox-list">List</button>
+                  <button class="on" type="button">Kanban</button>
+                </div>
+              </div>
+              <div class="row">
+                <button class="btn" type="button" data-go="inbox-list">Filter</button>
+                <button class="pri" type="button" data-go="new-ticket">New ticket</button>
+              </div>
+            </div>
+            <div class="board">
+              <section>
+                <div class="col-h"><span>Open</span><span class="count">2</span></div>
+                <button class="tcard" type="button" data-go="ticket-agent">
+                  <div class="tcard-top"><span>Dara Sok</span><span>#1042</span></div>
+                  <div class="tcard-title">Cannot connect to campus Wi-Fi</div>
+                  <div class="tcard-meta"><span class="chip">Hardware / Network</span><span class="pri-word">High</span></div>
+                  <div class="tcard-foot"><span>2 hours</span><span>Unassigned</span></div>
+                </button>
+                <button class="tcard" type="button" data-go="ticket-agent">
+                  <div class="tcard-top"><span>Pico Meas</span><span>#1036</span></div>
+                  <div class="tcard-title">Lab account locked after three tries</div>
+                  <div class="tcard-meta"><span class="chip">Software / Account access</span><span class="pri-word">Medium</span></div>
+                  <div class="tcard-foot"><span>5 hours</span><span>Unassigned</span></div>
+                </button>
+              </section>
+              <section>
+                <div class="col-h"><span>In progress</span><span class="count">1</span></div>
+                <button class="tcard" type="button" data-go="ticket-agent">
+                  <div class="tcard-top"><span>Dara Sok</span><span>#1041</span></div>
+                  <div class="tcard-title">Password reset loop on the portal</div>
+                  <div class="tcard-meta"><span class="chip">Software / Account access</span><span class="pri-word">Medium</span></div>
+                  <div class="tcard-foot"><span>1 day</span><span>Maly Chen</span></div>
+                </button>
+              </section>
+              <section>
+                <div class="col-h"><span>Resolved</span><span class="count">1</span></div>
+                <button class="tcard" type="button" data-go="ticket-agent">
+                  <div class="tcard-top"><span>Pico Meas</span><span>#1038</span></div>
+                  <div class="tcard-title">Laptop will not boot</div>
+                  <div class="tcard-meta"><span class="chip">Hardware / Laptop · inactive</span><span class="pri-word">High</span></div>
+                  <div class="tcard-foot"><span>3 days</span><span>Maly Chen</span></div>
+                </button>
+              </section>
+              <section>
+                <div class="col-h"><span>Closed</span><span class="count">1</span></div>
+                <button class="tcard" type="button" data-go="ticket-agent">
+                  <div class="tcard-top"><span>Pico Meas</span><span>#1033</span></div>
+                  <div class="tcard-title">Printer queue stuck in lab B</div>
+                  <div class="tcard-meta"><span class="chip">Hardware / Network</span><span class="pri-word">Low</span></div>
+                  <div class="tcard-foot"><span>6 days</span><span>Vanna Kem</span></div>
+                </button>
+                <p class="more">Older closed tickets are in the <button class="linkish" type="button" data-go="inbox-list">list</button>.</p>
+              </section>
+            </div>
+            <p class="caption">Dragging a card to another column changes its status. In this deck, a card opens #1038.</p>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>Agents and admins see every ticket. A requester never gets this sidebar.</li>
+        <li>The columns are the four statuses. Unassigned tickets stay in Open.</li>
+        <li>A new ticket always starts Open, so creation is one button, not a button on each column.</li>
+        <li>Admin uses this same board. Permanent delete is on the ticket.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="inbox-list" data-title="Inbox list" data-role="Agent">
+      <p class="role-line">Role <b>Agent and admin</b> · Maly Chen</p>
+      <div class="frame">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-right">
+            <span>Maly Chen · Agent</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <aside class="side">
+            <button class="on" type="button" data-go="inbox-board">Inbox</button>
+            <button type="button" data-go="catalog">Categories &amp; tags</button>
+            <button type="button" data-go="activity">Activity log</button>
+          </aside>
+          <div class="sheet">
+            <div class="sheet-top">
+              <div>
+                <h1>Inbox</h1>
+                <div class="switch">
+                  <button class="on" type="button">List</button>
+                  <button type="button" data-go="inbox-board">Kanban</button>
+                </div>
+              </div>
+              <button class="pri" type="button" data-go="new-ticket">New ticket</button>
+            </div>
+            <div class="filters">
+              <div class="field">
+                <div class="lbl">Search title</div>
+                <div class="ctrl"></div>
+              </div>
+              <div class="field"><div class="lbl">Status</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Priority</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Category</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Tag</div><div class="ctrl">Any</div></div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th><th>Requester</th><th>Email</th><th>Priority</th><th>Status</th><th>Assignee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cannot connect to campus Wi-Fi<br><span class="muted">#1042 · Hardware / Network</span></td>
+                  <td>Dara Sok</td><td>e20230105@gmail.com</td><td>High</td><td>Open</td><td>Unassigned</td>
+                </tr>
+                <tr>
+                  <td>Lab account locked after three tries<br><span class="muted">#1036 · Software / Account access</span></td>
+                  <td>Pico Meas</td><td>e20230418@gmail.com</td><td>Medium</td><td>Open</td><td>Unassigned</td>
+                </tr>
+                <tr>
+                  <td>Password reset loop on the portal<br><span class="muted">#1041 · Software / Account access</span></td>
+                  <td>Dara Sok</td><td>e20230105@gmail.com</td><td>Medium</td><td>In progress</td><td>Maly Chen</td>
+                </tr>
+                <tr data-go="ticket-agent">
+                  <td>Laptop will not boot<br><span class="muted">#1038 · Hardware / Laptop · inactive</span></td>
+                  <td>Pico Meas</td><td>e20230418@gmail.com</td><td>High</td><td>Resolved</td><td>Maly Chen</td>
+                </tr>
+                <tr>
+                  <td>Printer queue stuck in lab B<br><span class="muted">#1033 · Hardware / Network</span></td>
+                  <td>Pico Meas</td><td>e20230418@gmail.com</td><td>Low</td><td>Closed</td><td>Vanna Kem</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pager">
+              <button class="btn small" type="button" disabled>Previous</button>
+              <span>Page 1 of 2</span>
+              <button class="btn small" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>This is the Filter view: title search, status, priority, category, tag, and paging, across every ticket.</li>
+        <li>Each row shows the requester’s name and email, and the assignee or Unassigned.</li>
+        <li>Page 2 holds older closed tickets, including #1010.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="ticket-agent" data-title="Agent ticket" data-role="Agent and admin" data-view="agent">
+      <p class="role-line">Role <b>Agent and admin</b> · ticket #1038</p>
+      <div class="frame">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-right">
+            <span class="agent-only">Maly Chen · Agent</span>
+            <span class="admin-only">Vanna Kem · Admin</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <aside class="side">
+            <button class="on" type="button" data-go="inbox-board">Inbox</button>
+            <button type="button" data-go="catalog">Categories &amp; tags</button>
+            <button type="button" data-go="activity">Activity log</button>
+          </aside>
+          <div class="sheet">
+            <div class="sheet-top">
+              <div>
+                <h1>Laptop will not boot</h1>
+                <p class="sub">#1038 · Pico Meas · e20230418@gmail.com</p>
+              </div>
+              <button class="btn" type="button">Edit</button>
+            </div>
+            <div class="actions">
+              <div class="field">
+                <div class="lbl">Assignee</div>
+                <div class="ctrl">Maly Chen</div>
+              </div>
+              <div class="field">
+                <div class="lbl">Status</div>
+                <div class="ctrl">Resolved</div>
+              </div>
+              <button class="btn danger admin-only" type="button" data-open-confirm>Delete ticket</button>
+            </div>
+            <div class="meta">
+              <div class="k">Priority</div><div>High</div>
+              <div class="k">Category</div><div>Hardware / Laptop <span class="muted">· inactive, kept on this ticket</span></div>
+              <div class="k">Tags</div><div>Student / Year 2</div>
+            </div>
+            <p class="prose">The laptop stops at the ITC logo and never reaches the login screen.</p>
+            <div class="ph">boot-error.png</div>
+            <h2 style="font-size:16px">Comments</h2>
+            <article class="comment">
+              <header><strong>Pico Meas</strong><span class="muted">Public · 3 days ago</span></header>
+              <p>The laptop stops at the ITC logo.</p>
+              <div class="row" style="margin-top:8px"><button class="btn small" type="button">Edit</button><button class="btn small" type="button">Hide</button></div>
+            </article>
+            <article class="comment">
+              <header><strong>Pico Meas</strong><span class="muted">Public · 3 days ago</span></header>
+              <p class="muted">Comment removed</p>
+            </article>
+            <article class="comment internal">
+              <header>
+                <strong>Maly Chen <span class="tag">Internal</span></strong>
+                <span class="muted">2 days ago</span>
+              </header>
+              <p>Battery is dead. A replacement is in the lab cage.</p>
+              <div class="row" style="margin-top:8px"><button class="btn small" type="button">Edit</button><button class="btn small" type="button">Hide</button></div>
+            </article>
+            <article class="comment">
+              <header>
+                <strong>Maly Chen</strong>
+                <span class="muted">Public · edited by Maly Chen · 2 days ago</span>
+              </header>
+              <p>A replacement laptop is ready for pickup at the lab desk.</p>
+              <div class="row" style="margin-top:8px"><button class="btn small" type="button">Edit</button><button class="btn small" type="button">Hide</button></div>
+            </article>
+            <div class="composer">
+              <div class="switch">
+                <button class="on" type="button">Public reply</button>
+                <button type="button">Internal note</button>
+              </div>
+              <div class="ctrl area" style="width:100%">Write a reply</div>
+              <button class="pri" type="button">Post</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+        <div class="modal-back" id="confirm" hidden>
+          <div class="modal">
+            <h2>Delete ticket #1038?</h2>
+            <p>This removes the ticket, its comments, its tag links, and boot-error.png. The activity log stays.</p>
+            <div class="row">
+              <button class="btn" type="button" data-close-confirm>Cancel</button>
+              <button class="pri" type="button">Delete permanently</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-tools">
+        <span class="muted">Show this screen as</span>
+        <button class="tool" type="button" data-view-set="agent" aria-pressed="true">Agent</button>
+        <button class="tool" type="button" data-view-set="admin" aria-pressed="false">Admin</button>
+      </div>
+      <ul class="notes">
+        <li>Switch to Admin. Delete ticket is the only addition, and it asks for confirmation first. Edit uses the same form as Edit ticket.</li>
+        <li>Assigning an Open ticket sets it to In progress unless a status is chosen at the same time.</li>
+        <li>An agent can edit or hide any comment. The requester does not receive the internal note.</li>
+        <li>Hardware / Laptop stays visible here. It is absent from the new-ticket picker.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="catalog" data-title="Categories and tags" data-role="Agent">
+      <p class="role-line">Role <b>Agent and admin</b></p>
+      <div class="frame">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-right">
+            <span>Maly Chen · Agent</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <aside class="side">
+            <button type="button" data-go="inbox-board">Inbox</button>
+            <button class="on" type="button">Categories &amp; tags</button>
+            <button type="button" data-go="activity">Activity log</button>
+          </aside>
+          <div class="sheet">
+            <h1>Categories and tags</h1>
+            <p class="sub">A name is 2 to 60 characters. A parent that does not exist, or that would make a loop, is refused.</p>
+            <div class="split" style="margin-top:16px">
+              <section>
+                <h2 style="font-size:16px">Categories</h2>
+                <div class="row" style="margin-top:10px">
+                  <div class="ctrl" style="flex:1">Name</div>
+                  <div class="ctrl">Parent: Hardware</div>
+                  <button class="btn" type="button">Add</button>
+                </div>
+                <div class="tree">
+                  <div class="node">Hardware</div>
+                  <div class="node sel child">
+                    <span style="flex:1">Laptop <span class="muted">inactive</span></span>
+                    <button class="btn small" type="button">Rename</button>
+                    <button class="btn small" type="button">Activate</button>
+                    <button class="btn small" type="button">Delete</button>
+                  </div>
+                  <div class="node child">Network</div>
+                  <div class="node">Software</div>
+                  <div class="node child">Account access</div>
+                </div>
+                <div class="msg refusal">Cannot delete Laptop. A ticket still uses it.</div>
+              </section>
+              <section>
+                <h2 style="font-size:16px">Tags</h2>
+                <div class="row" style="margin-top:10px">
+                  <div class="ctrl" style="flex:1">Name</div>
+                  <div class="ctrl">Parent: none</div>
+                  <button class="btn" type="button">Add</button>
+                </div>
+                <div class="tree">
+                  <div class="node">Student</div>
+                  <div class="node child">Year 1</div>
+                  <div class="node child">Year 2</div>
+                  <div class="node sel">
+                    <span style="flex:1">Urgent</span>
+                    <button class="btn small" type="button">Rename</button>
+                    <button class="btn small" type="button">Deactivate</button>
+                    <button class="btn small" type="button">Delete</button>
+                  </div>
+                </div>
+                <div class="msg refusal">Student cannot be deleted while it has child tags. Urgent has no children: deleting it removes it from tickets, and each of those tickets gets a log entry.</div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>Agents and admins can add, rename, deactivate, and delete. A requester cannot open this screen.</li>
+        <li>An inactive node stays on tickets that already use it and drops out of the new-ticket picker.</li>
+        <li>A category with children, or with tickets, is refused, and the message says which reason.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="activity" data-title="Activity log" data-role="Agent">
+      <p class="role-line">Role <b>Agent and admin</b></p>
+      <div class="frame">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-right">
+            <span>Maly Chen · Agent</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <aside class="side">
+            <button type="button" data-go="inbox-board">Inbox</button>
+            <button type="button" data-go="catalog">Categories &amp; tags</button>
+            <button class="on" type="button">Activity log</button>
+          </aside>
+          <div class="sheet">
+            <h1>Activity log</h1>
+            <p class="sub">Newest first. Rows stay after a ticket is deleted, and nothing here can be edited.</p>
+            <div class="filters" style="grid-template-columns: 1fr 1fr 1fr;">
+              <div class="field"><div class="lbl">Action</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Person</div><div class="ctrl">Any</div></div>
+              <div class="field"><div class="lbl">Page size</div><div class="ctrl">20</div></div>
+            </div>
+            <table>
+              <thead>
+                <tr><th>When</th><th>Person</th><th>Action</th><th>On</th><th>Old</th><th>New</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>28 Oct 16:48</td>
+                  <td>Dara Sok</td>
+                  <td>Password changed</td>
+                  <td>e20230105@gmail.com</td>
+                  <td>Preset password</td>
+                  <td>Replaced</td>
+                </tr>
+                <tr>
+                  <td>28 Oct 16:40</td>
+                  <td>Maly Chen</td>
+                  <td>Comment hidden</td>
+                  <td>Comment on #1038</td>
+                  <td>The charger was in the other bag.</td>
+                  <td>Hidden</td>
+                </tr>
+                <tr>
+                  <td>28 Oct 16:12</td>
+                  <td>Maly Chen</td>
+                  <td>Status changed</td>
+                  <td>#1041</td>
+                  <td>Open</td>
+                  <td>In progress</td>
+                </tr>
+                <tr>
+                  <td>28 Oct 15:02</td>
+                  <td>Dara Sok</td>
+                  <td>Ticket created</td>
+                  <td>#1042</td>
+                  <td>—</td>
+                  <td>Open · Hardware / Network</td>
+                </tr>
+                <tr>
+                  <td>28 Oct 14:11</td>
+                  <td>—</td>
+                  <td>Failed login</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>e20239999@gmail.com</td>
+                </tr>
+                <tr>
+                  <td>27 Oct 09:20</td>
+                  <td>Vanna Kem</td>
+                  <td>Tag removed</td>
+                  <td>Urgent on #1010</td>
+                  <td>Urgent</td>
+                  <td>Removed from ticket</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pager">
+              <button class="btn small" type="button" disabled>Previous</button>
+              <span>Page 1 of 4</span>
+              <button class="btn small" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>Filter by action and by person. A requester cannot open this screen.</li>
+        <li>A failed login has no person attached. The new value is the email that was tried.</li>
+        <li>Hiding a comment stores its original text in the old value. The ticket screen no longer returns that text.</li>
+        <li>A row never contains a password, a token, or a password hash.</li>
+      </ul>
+    </article>
+
+    <article class="screen" id="not-found" data-title="Not found" data-role="Shared">
+      <p class="role-line">Role <b>Whoever is signed in</b></p>
+      <div class="frame requester">
+        <header class="topnav">
+          <div class="brand">Helpdesk</div>
+          <div class="nav-links">
+            <button type="button" data-go="my-tickets">My tickets</button>
+            <button type="button" data-go="new-ticket">New ticket</button>
+          </div>
+          <div class="nav-right">
+            <span>Dara Sok · Requester</span>
+            <button class="btn small" type="button" data-go="sign-in">Sign out</button>
+          </div>
+        </header>
+        <div class="mid">
+          <div class="sheet" style="display:grid;place-items:center;text-align:center">
+            <div>
+              <h1>Page not found</h1>
+              <p class="sub" style="margin-top:8px">This address does not match a page, or this ticket is not available.</p>
+              <button class="pri" type="button" data-go="my-tickets" style="margin-top:16px">My tickets</button>
+            </div>
+          </div>
+        </div>
+        <footer class="foot">Helpdesk</footer>
+      </div>
+      <ul class="notes">
+        <li>An unknown address uses this page. An agent sees it inside the agent shell.</li>
+        <li>An unknown ticket, and a requester opening someone else’s ticket, use the same outcome, so the ticket’s existence is not revealed.</li>
+        <li>A missing or invalid token does not reach this page. It returns to Sign in.</li>
+      </ul>
+    </article>
+  </div>
+
+  <script>
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const chips = document.getElementById("chips");
+    const title = document.getElementById("screen-title");
+    const counter = document.getElementById("counter");
+    let index = 0;
+
+    screens.forEach((screen, i) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "nav-chip";
+      chip.textContent = screen.dataset.title;
+      chip.addEventListener("click", () => show(i));
+      chips.appendChild(chip);
+    });
+
+    function show(next) {
+      index = (next + screens.length) % screens.length;
+      screens.forEach((screen, i) => screen.classList.toggle("is-on", i === index));
+      const current = screens[index];
+      title.textContent = current.dataset.title;
+      counter.textContent = (index + 1) + " / " + screens.length;
+      chips.querySelectorAll(".nav-chip").forEach((chip, i) => {
+        if (i === index) chip.setAttribute("aria-current", "true");
+        else chip.removeAttribute("aria-current");
+      });
+      const ticket = document.getElementById("ticket-agent");
+      if (current !== ticket) {
+        ticket.dataset.view = "agent";
+        document.getElementById("confirm").hidden = true;
+        syncViewButtons();
+      }
+      history.replaceState(null, "", "#" + current.id);
+      window.scrollTo(0, 0);
+    }
+
+    function syncViewButtons() {
+      const view = document.getElementById("ticket-agent").dataset.view;
+      document.querySelectorAll("[data-view-set]").forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.viewSet === view ? "true" : "false");
+      });
+    }
+
+    document.getElementById("prev").addEventListener("click", () => show(index - 1));
+    document.getElementById("next").addEventListener("click", () => show(index + 1));
+    document.addEventListener("keydown", (event) => {
+      if (event.target.closest("input, textarea, select")) return;
+      if (event.key === "ArrowRight") show(index + 1);
+      if (event.key === "ArrowLeft") show(index - 1);
+    });
+    document.addEventListener("click", (event) => {
+      const go = event.target.closest("[data-go]");
+      if (go) {
+        const next = screens.findIndex((screen) => screen.id === go.dataset.go);
+        if (next >= 0) show(next);
+        return;
+      }
+      const view = event.target.closest("[data-view-set]");
+      if (view) {
+        document.getElementById("ticket-agent").dataset.view = view.dataset.viewSet;
+        if (view.dataset.viewSet === "agent") document.getElementById("confirm").hidden = true;
+        syncViewButtons();
+        return;
+      }
+      if (event.target.closest("[data-open-confirm]")) document.getElementById("confirm").hidden = false;
+      if (event.target.closest("[data-close-confirm]")) document.getElementById("confirm").hidden = true;
+    });
+
+    const start = screens.findIndex((screen) => screen.id === location.hash.slice(1));
+    show(start >= 0 ? start : 0);
+  </script>
+</body>
+</html>
