@@ -8,33 +8,78 @@ const comments = sampleComments.filter((item) => item.ticketId === 1)
 </script>
 
 <template>
-  <main>
-    <p v-if="!ticket">Ticket not found.</p>
+  <main class="page">
+    <p v-if="!ticket" class="banner banner-error">Ticket not found.</p>
     <template v-else>
-      <h1>{{ ticket.title }}</h1>
-      <p>{{ ticket.status }} {{ ticket.priority }}</p>
-      <p>{{ ticket.categoryPath }}</p>
-      <p v-if="ticket.area">{{ ticket.area }}</p>
-      <p>{{ ticket.description }}</p>
+      <section class="surface panel">
+        <p class="muted">#{{ ticket.id }}</p>
+        <h1 class="page-title">{{ ticket.title }}</h1>
+        <div class="badges">
+          <span class="badge" :class="`status-${ticket.status.toLowerCase()}`">
+            {{ ticket.status.replace('_', ' ') }}
+          </span>
+          <span class="priority" :class="`priority-${ticket.priority.toLowerCase()}`">
+            {{ ticket.priority }}
+          </span>
+        </div>
+        <dl class="meta">
+          <dt>Category</dt>
+          <dd>{{ ticket.categoryPath }}</dd>
+          <template v-if="ticket.area">
+            <dt>Area</dt>
+            <dd>{{ ticket.area }}</dd>
+          </template>
+        </dl>
+        <p class="prose">{{ ticket.description }}</p>
+      </section>
 
-      <h2>Comments</h2>
-      <p v-if="comments.length === 0">No comments yet.</p>
-      <CommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
+      <section class="surface panel">
+        <h2>Comments</h2>
+        <p v-if="comments.length === 0" class="muted">No comments yet.</p>
+        <CommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
+      </section>
     </template>
   </main>
 </template>
 
 <style scoped>
-main {
-  max-width: 640px;
-  margin: 24px;
-  font-family: sans-serif;
+.panel {
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
 }
-h1 {
-  font-size: 24px;
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 var(--space-4);
 }
+
+.meta {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-4);
+  font-size: 14px;
+}
+
+dt {
+  color: var(--color-muted);
+}
+
+dd {
+  margin: 0;
+}
+
+.prose {
+  max-width: 65ch;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line);
+}
+
 h2 {
   font-size: 18px;
-  margin-top: 24px;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
 }
 </style>
