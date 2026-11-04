@@ -14,7 +14,7 @@ US-09 (activity log) moved to nice-to-have. Auth, tickets, comments, inbox, and 
 
 **What state lives in the store and what stays inside a component? Why?**
 
-_(Answer when M1 is ready.)_
+The Pinia tickets store holds the shared ticket list (plus loading and error), because My tickets and New ticket both need it, create updates the list without another fetch. Form drafts, field errors, and the open ticket with its comments stay in their own views, because no other screen needs that data and it should reset when the user leaves. Cards only get props and emit events. The store talks to a service layer, so M3 can swap mocks for a real API without touching the UI.
 
 ---
 
