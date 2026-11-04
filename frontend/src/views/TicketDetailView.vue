@@ -1,15 +1,40 @@
 <script setup lang="ts">
+import { fetchComments, fetchTicket } from '@/services/ticket'
+import type { Comment } from '@/types/comment'
 import CommentItem from '@/components/CommentItem.vue'
-import { comment as sampleComments } from '@/mock/comments'
-import { tickets } from '@/mock/tickets'
+import type { Ticket } from '@/types/ticket'
+import { ref, watch } from 'vue'
 
-const ticket = tickets.find((item) => item.id === 1)
-const comments = sampleComments.filter((item) => item.ticketId === 1)
+const props = defineProps<{
+  id: string
+}>()
+
+const ticket = ref<Ticket | null>(null)
+const comments = ref<Comment[]>([])
+const loading = ref(true)
+const error = ref('')
+
+async function load() {
+  loading.value = true
+  error.value = ''
+  try {
+    const id = Number(props.id)
+    ;[ticket.value, comments.value] = await Promise.all([fetchTicket(id), fetchComments(id)])
+  } catch {
+    error.value = 'Could not load this tickets'
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(() => props.id, load, { immediate: true })
 </script>
 
 <template>
   <main class="page">
-    <p v-if="!ticket" class="banner banner-error">Ticket not found.</p>
+    <div v-if="loading" class="surface empty">Loading ticket…</div>
+    <p v-else-if="error" class="banner banner-error">{{ error }}</p>
+    <p v-else-if="!ticket" class="banner banner-error">Ticket not found.</p>
     <template v-else>
       <section class="surface panel">
         <p class="muted">#{{ ticket.id }}</p>

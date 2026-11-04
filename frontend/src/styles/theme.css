@@ -117,6 +117,8 @@ a {
     background 0.15s,
     border-color 0.15s,
     box-shadow 0.15s;
+  color: var(--color-ink);
+  text-decoration: none;
 }
 
 .btn:hover {
@@ -217,4 +219,37 @@ a {
   text-align: center;
   padding: var(--space-6);
   color: var(--color-muted);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  background: var(--color-sheet);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.input.invalid {
+  border-color: var(--color-danger);
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--color-danger);
 }
