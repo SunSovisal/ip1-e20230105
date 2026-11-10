@@ -21,4 +21,11 @@ export const comment: Comment[] = [
     body: 'Connecting at Building J 6th floor work',
     createdAt: '27 Oct 2026, 14:20',
   },
+  {
+    id: 4,
+    ticketId: 3,
+    authorName: 'Sun Sovisal',
+    body: 'I have reset your password, login with the default password to change.',
+    createdAt: '27 Oct 2026, 14:20',
+  },
 ]

@@ -1,29 +1,32 @@
 <script setup lang="ts">
 import type { Comment } from '@/types/comment'
 
-const props = defineProps<{
+defineProps<{
   comment: Comment
 }>()
 </script>
 
 <template>
   <article class="comment">
-    <p class="meta">{{ comment.authorName }} {{ comment.createdAt }}</p>
+    <p class="meta">
+      <strong>{{ comment.authorName }}</strong>
+      <span class="muted">{{ comment.createdAt }}</span>
+    </p>
     <p>{{ comment.body }}</p>
   </article>
 </template>
 
 <style scoped>
 .comment {
-  border: 1px solid #111;
-  padding: 12px 16px;
-  margin-bottom: 12px;
+  border-top: 1px solid var(--color-line);
+  padding: var(--space-3) 0;
 }
+
 .meta {
-  margin: 0 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
   font-size: 14px;
-}
-p {
-  margin: 0;
 }
 </style>
