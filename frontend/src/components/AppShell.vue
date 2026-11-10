@@ -1,28 +1,35 @@
 <script setup lang="ts">
-import { tickets } from '@/mock/tickets';
+import { computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   user: { name: string; role: 'REQUESTER' | 'AGENT' | 'ADMIN' }
 }>()
 
 const emit = defineEmits<{
   signOut: []
 }>()
+
+const roleLabel = computed(() => {
+  if (props.user.role === 'AGENT') return 'Agent'
+  if (props.user.role === 'ADMIN') return 'Admin'
+  return 'Requester'
+})
 </script>
 
 <template>
-    <header class="topbar">
-        <span class="brand">Helpdesk</span>
-        <nav class="nav">
-            <RouterLink :to=" { name: 'tickets' }">My tickets</RouterLink>
-            <RouterLink :to=" { name: 'ticket-new'}">New ticket</RouterLink>
-        </nav>
-        <div class="user">
-            <span class="muted">{{  user.name }} {{ user.role }}</span>
-            <button class="btn btn-small" type="button" @click="emit('signOut')">Sign out</button>
-        </div>
-    </header>
-    <slot />
+  <header class="topbar">
+    <span class="brand">Helpdesk</span>
+    <nav class="nav">
+      <RouterLink v-if="user.role === 'ADMIN'" :to="{ name: 'staff' }">Staff</RouterLink>
+      <RouterLink :to="{ name: 'tickets' }">My tickets</RouterLink>
+      <RouterLink :to="{ name: 'ticket-new' }">New ticket</RouterLink>
+    </nav>
+    <div class="user">
+      <span class="muted">{{ user.name }} · {{ roleLabel }}</span>
+      <button class="btn btn-small" type="button" @click="emit('signOut')">Sign out</button>
+    </div>
+  </header>
+  <slot />
 </template>
 
 <style scoped>

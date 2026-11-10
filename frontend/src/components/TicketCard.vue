@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { statusLabel } from '@/lib/labels'
 import type { Ticket } from '@/types/ticket'
 
 const props = defineProps<{
@@ -14,18 +15,19 @@ const emit = defineEmits<{
   <article class="card surface">
     <div class="card-top">
       <span class="badge" :class="`status-${ticket.status.toLowerCase()}`">
-        {{ ticket.status.replace('_', ' ') }}
+        {{ statusLabel(ticket.status) }}
       </span>
       <span class="priority" :class="`priority-${ticket.priority.toLowerCase()}`">
         {{ ticket.priority }}
       </span>
     </div>
     <h2>{{ props.ticket.title }}</h2>
-    <p class="muted">
-      {{ ticket.categoryPath }}<template v-if="ticket.area"> · {{ ticket.area }}</template>
-    </p>
+    <p class="muted">{{ ticket.categoryPath }}</p>
     <div class="card-foot">
-      <span class="muted">#{{ ticket.id }}</span>
+      <span class="muted">
+        #{{ ticket.id }}<template v-if="ticket.area"> · {{ ticket.area }}</template> ·
+        {{ ticket.assigneeName || 'Unassigned' }}
+      </span>
       <button class="btn btn-small" type="button" @click="emit('open', ticket.id)">Open</button>
     </div>
   </article>

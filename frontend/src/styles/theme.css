@@ -53,6 +53,10 @@ body {
   margin: 0;
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);
@@ -239,6 +243,16 @@ a {
   padding: 8px 12px;
 }
 
+select.input {
+  color-scheme: light;
+  appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235b6675' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
 .input:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -252,4 +266,33 @@ a {
 .field-error {
   font-size: 12px;
   color: var(--color-danger);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  background: var(--color-soft);
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-line);
+  vertical-align: top;
+}
+
+.table tbody tr {
+  cursor: pointer;
+}
+
+.table tbody tr:hover {
+  background: var(--color-soft);
 }
