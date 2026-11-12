@@ -28,9 +28,12 @@ async function onSubmit() {
 
 <template>
   <main class="auth-page">
-    <p class="brand">Helpdesk</p>
-    <form class="surface card" @submit.prevent="onSubmit">
-      <h1 class="page-title">Register</h1>
+    <form class="surface auth-card" @submit.prevent="onSubmit">
+      <p class="auth-brand"><span class="mark" aria-hidden="true">H</span>Helpdesk</p>
+      <div>
+        <h1 class="page-title">Register</h1>
+        <p class="muted">New accounts are requester accounts.</p>
+      </div>
       <p v-if="auth.error" class="banner banner-error">{{ auth.error }}</p>
       <label class="field">
         <span class="label">Name</span>
@@ -52,37 +55,8 @@ async function onSubmit() {
       </label>
       <button class="btn btn-primary" type="submit" :disabled="submitting">Create account</button>
     </form>
-    <p class="switch">
+    <p class="auth-switch">
       Already registered? <RouterLink :to="{ name: 'login' }">Sign in</RouterLink>
     </p>
   </main>
 </template>
-
-<style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: var(--space-4);
-  padding: var(--space-6) var(--space-4);
-}
-.brand {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-.card {
-  width: min(420px, 100%);
-  padding: var(--space-6);
-  display: grid;
-  gap: var(--space-4);
-}
-.card .btn-primary {
-  width: 100%;
-  justify-content: center;
-}
-.switch {
-  font-size: 14px;
-}
-</style>

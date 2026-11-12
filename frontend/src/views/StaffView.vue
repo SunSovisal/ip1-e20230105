@@ -8,8 +8,8 @@ const people = ref<User[]>([])
 const error = ref('')
 
 function roleLabel(role: User['role']) {
-  if (role == 'AGENT') return 'Agent'
-  if (role == 'ADMIN') return 'Admin'
+  if (role === 'AGENT') return 'Agent'
+  if (role === 'ADMIN') return 'Admin'
   return 'Requester'
 }
 
@@ -32,10 +32,12 @@ async function makeAgent(userId: number) {
 
 <template>
   <main class="page">
-    <header class="heading">
-      <h1 class="page-title">Staff</h1>
-      <p class="muted">Change a requester into an agent.</p>
-    </header>
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">Staff</h1>
+        <p class="muted">Admins can give a requester agent access. This cannot be undone here.</p>
+      </div>
+    </div>
     <p v-if="error" class="banner banner-error">{{ error }}</p>
     <div class="surface">
       <table class="table staff">
@@ -50,8 +52,12 @@ async function makeAgent(userId: number) {
         <tbody>
           <tr v-for="person in people" :key="person.id">
             <td>{{ person.name }}</td>
-            <td>{{ person.email }}</td>
-            <td>{{ roleLabel(person.role) }}</td>
+            <td class="muted">{{ person.email }}</td>
+            <td>
+              <span class="role" :class="`role-${person.role.toLowerCase()}`">
+                {{ roleLabel(person.role) }}
+              </span>
+            </td>
             <td>
               <button
                 v-if="person.role === 'REQUESTER'"
@@ -69,13 +75,26 @@ async function makeAgent(userId: number) {
   </main>
 </template>
 <style scoped>
-.heading {
-  margin-bottom: var(--space-5);
-}
 .staff :deep(tbody tr) {
   cursor: default;
 }
+.staff :deep(tbody tr:hover) {
+  background: none;
+}
+td {
+  vertical-align: middle;
+}
 td:last-child {
   text-align: right;
+}
+.role {
+  font-size: 13px;
+}
+.role-agent,
+.role-admin {
+  font-weight: 600;
+}
+.surface {
+  overflow-x: auto;
 }
 </style>

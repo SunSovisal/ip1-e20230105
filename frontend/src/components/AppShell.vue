@@ -18,15 +18,20 @@ const roleLabel = computed(() => {
 
 <template>
   <header class="topbar">
-    <span class="brand">Helpdesk</span>
+    <RouterLink class="brand" :to="{ name: 'tickets' }">
+      <span class="mark" aria-hidden="true">H</span>
+      Helpdesk
+    </RouterLink>
     <nav class="nav">
-      <RouterLink v-if="user.role === 'ADMIN'" :to="{ name: 'staff' }">Staff</RouterLink>
       <RouterLink :to="{ name: 'tickets' }">My tickets</RouterLink>
       <RouterLink :to="{ name: 'ticket-new' }">New ticket</RouterLink>
+      <RouterLink v-if="user.role === 'ADMIN'" :to="{ name: 'staff' }">Staff</RouterLink>
     </nav>
     <div class="user">
-      <span class="muted">{{ user.name }} · {{ roleLabel }}</span>
-      <button class="btn btn-small" type="button" @click="emit('signOut')">Sign out</button>
+      <span class="who">
+        {{ user.name }} <span class="role">{{ roleLabel }}</span>
+      </span>
+      <button class="signout" type="button" @click="emit('signOut')">Sign out</button>
     </div>
   </header>
   <slot />
@@ -36,37 +41,110 @@ const roleLabel = computed(() => {
 .topbar {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
-  height: 56px;
+  gap: var(--space-6);
+  height: 52px;
   padding: 0 var(--space-5);
-  background: var(--color-sheet);
-  border-bottom: 1px solid var(--color-line);
+  background: var(--color-bar);
+  color: var(--color-bar-text);
+  font-size: 14px;
 }
+
 .brand {
-  font-weight: 700;
-  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #fff;
+  font-weight: 650;
+  text-decoration: none;
 }
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .nav {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-5);
   height: 100%;
 }
+
 .nav a {
   display: flex;
   align-items: center;
-  color: var(--color-muted);
+  color: var(--color-bar-text);
   text-decoration: none;
   border-bottom: 2px solid transparent;
+  padding-top: 2px;
 }
-.nav a.router-link-active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-  font-weight: 600;
+
+.nav a:hover {
+  color: #fff;
 }
+
+.nav a.router-link-exact-active {
+  color: #fff;
+  border-bottom-color: #7fc4b8;
+}
+
 .user {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
+}
+
+.role {
+  margin-left: 4px;
+  padding: 1px 6px;
+  border: 1px solid #4a5250;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.signout {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--color-bar-text);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.signout:hover {
+  color: #fff;
+}
+
+.brand:focus-visible,
+.nav a:focus-visible,
+.signout:focus-visible {
+  outline: 2px solid #7fc4b8;
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 0 var(--space-4);
+    padding: var(--space-2) var(--space-4) 0;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    height: 40px;
+  }
+
+  .who {
+    display: none;
+  }
 }
 </style>

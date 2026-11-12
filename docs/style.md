@@ -20,69 +20,70 @@ The wireframes in `docs/wireframes` give the layout: what is on each screen and 
 
 | Variable | Value | Use |
 |---|---|---|
-| `--color-primary` | `#0b4ca2` | Brand. Primary buttons, links, focus ring, active nav |
-| `--color-primary-hover` | `#093d84` | Primary button hover |
-| `--color-primary-soft` | `#e8f0fb` | Selected row, active nav background |
-| `--color-ink` | `#1b2430` | Body text, headings |
-| `--color-muted` | `#5b6675` | Secondary text, labels, timestamps |
-| `--color-line` | `#e3e7ed` | Card borders, dividers, table rows |
-| `--color-line-strong` | `#c9d0da` | Inputs, secondary buttons, hover border |
-| `--color-paper` | `#f5f7fa` | Page background |
+| `--color-primary` | `#1f5f56` | Brand (deep teal). Primary buttons, links, focus ring |
+| `--color-primary-hover` | `#174a43` | Primary button hover |
+| `--color-primary-soft` | `#e3efec` | Selected segment, selected row |
+| `--color-ink` | `#1d2221` | Body text, headings |
+| `--color-muted` | `#5e6664` | Secondary text, labels, timestamps |
+| `--color-line` | `#e2e1dc` | Card borders, dividers, table rows |
+| `--color-line-strong` | `#c8c7c0` | Inputs, secondary buttons, table header rule |
+| `--color-paper` | `#f7f6f3` | Page background (warm grey), filter bar, row hover |
 | `--color-sheet` | `#ffffff` | Cards, panels, inputs |
-| `--color-soft` | `#f0f3f7` | Hover background, table header, subtle fills |
-| `--color-danger` | `#c62828` | Errors, delete actions |
-| `--color-danger-soft` | `#fdecec` | Error banner background |
+| `--color-soft` | `#f0efeb` | Button hover, subtle fills |
+| `--color-bar` | `#1d2221` | Top bar background |
+| `--color-bar-text` | `#c9cfcd` | Top bar links and user text |
+| `--color-danger` | `#b42318` | Errors, delete actions |
+| `--color-danger-soft` | `#fdf0ee` | Error banner background |
 
 ### Status and priority
 
-| Value | Class | Text | Background |
-|---|---|---|---|
-| OPEN | `.status-open` | `--status-open` | `--status-open-bg` |
-| IN_PROGRESS | `.status-in_progress` | `--status-progress` | `--status-progress-bg` |
-| RESOLVED | `.status-resolved` | `--status-resolved` | `--status-resolved-bg` |
-| CLOSED | `.status-closed` | `--status-closed` | `--status-closed-bg` |
-| HIGH | `.priority-high` | `--priority-high` | none |
-| MEDIUM | `.priority-medium` | `--priority-medium` | none |
-| LOW | `.priority-low` | `--priority-low` | none |
+| Value | Class | Look |
+|---|---|---|
+| OPEN | `.status-open` | Filled dot `--status-open` (blue), ink text |
+| IN_PROGRESS | `.status-in_progress` | Filled dot `--status-progress` (amber), ink text |
+| RESOLVED | `.status-resolved` | Filled dot `--status-resolved` (green), ink text |
+| CLOSED | `.status-closed` | Hollow dot `--status-closed`, muted text |
+| HIGH | `.priority-high` | `--priority-high`, weight 600 |
+| MEDIUM | `.priority-medium` | `--priority-medium` |
+| LOW | `.priority-low` | `--priority-low` |
 
 The class is built from the value, so new code stays consistent:
 
 ```vue
 <span class="badge" :class="`status-${ticket.status.toLowerCase()}`">
-  {{ ticket.status.replace('_', ' ') }}
+  {{ statusLabel(ticket.status) }}
 </span>
 <span class="priority" :class="`priority-${ticket.priority.toLowerCase()}`">
-  {{ ticket.priority }}
+  {{ priorityLabel(ticket.priority) }}
 </span>
 ```
 
-Status is always a `.badge` pill. Priority is always coloured uppercase text, never a pill, so the two never look alike.
+Status is always a `.badge`: an 8px dot plus the word, no filled pill. Priority is plain coloured text in sentence case. Always use `statusLabel` and `priorityLabel` from `lib/labels.ts`, never the raw enum, so every screen says "In progress" and "Medium" the same way.
 
 ### Type
 
 | Use | Size | Weight |
 |---|---|---|
 | Body | 15px, line-height 1.5 | 400 |
-| Page title (`.page-title`) | 24px | 700 |
-| Section heading (h2 in a panel) | 18px | 600 |
-| Card title | 16px | 600 |
+| Page title (`.page-title`) | 22px | 650 |
+| Section heading (h2 in a panel) | 16px | 600 |
+| Card title | 15px | 600 |
 | Table, meta grid | 14px | 400 |
-| Muted text (`.muted`), table header | 13px | 400 / 600 |
-| Badge, priority, field label | 12px | 600 / 700 |
+| Muted text (`.muted`), status, priority, field label | 13px | 400 / 600 |
+| Table header | 12.5px | 600 |
+| Ticket id (`.mono`) | 12.5px monospace | 400 |
 
-Font is `--font-sans` (Inter, falling back to the system font). Inter is not loaded yet; add it in `index.html` if wanted.
+Font is `--font-sans`, the system UI font. No web font is loaded. Ticket ids such as `#12` use `--font-mono` through the `.mono` class.
 
 ### Spacing, radius, shadow
 
 | Variable | Value |
 |---|---|
 | `--space-1` … `--space-6` | 4, 8, 12, 16, 24, 32 px |
-| `--radius-sm` | 6px: buttons, inputs, banners |
-| `--radius` | 10px: cards, panels, dialogs |
-| `--radius-pill` | 999px: badges |
-| `--shadow-sm` | Resting card |
-| `--shadow` | Hovered card, dropdown, dialog |
-| `--page-max` | 960px content width |
+| `--radius-sm` | 4px: buttons, inputs, banners |
+| `--radius` | 6px: cards, panels, dialogs |
+| `--shadow` | Only floating things: dropdown menu, dialog. Cards and panels have a border and no shadow |
+| `--page-max` | 1080px content width. Forms cap at 720px, ticket detail at 800px |
 
 Space inside a panel is `--space-5`. Space between panels or cards is `--space-3` to `--space-4`. Space between a page header and content is `--space-5`.
 
@@ -90,41 +91,43 @@ Space inside a panel is `--space-5`. Space between panels or cards is `--space-3
 
 | Class | What it is |
 |---|---|
-| `.page` | Centred main column, max width 960px. Every view's `<main>` uses it |
+| `.page` | Centred main column, max width 1080px. Every view's `<main>` uses it |
+| `.page-head` | Header row: title and `.muted` subline left, primary action right. Stacks under 720px |
 | `.page-title` | The h1 of a screen |
-| `.surface` | White box with border, 10px radius, small shadow. Cards and panels |
+| `.surface` | White box, 1px `--color-line` border, 6px radius, no shadow. Cards and panels |
+| `.mono` | Monospace 12.5px, for ticket ids |
+| `.btn-link` | Text button styled as a link, 13px. Small secondary actions such as "Clear filters" |
+| `.auth-page`, `.auth-card`, `.auth-brand`, `.auth-switch` | Sign in and Register layout. Change password uses them too |
 | `.muted` | Secondary 13px text |
 | `.btn` | Secondary button: white, grey border |
 | `.btn-primary` | Main action on the screen (blue). At most one per area |
 | `.btn-small` | Compact button inside cards, rows, pager |
-| `.badge` + `.status-*` | Status pill |
+| `.badge` + `.status-*` | Status: dot plus word |
 | `.priority` + `.priority-*` | Priority text |
-| `.banner` | Info message |
+| `.banner` | Info message, 3px left border |
 | `.banner-error` | Error message (red) |
 | `.empty` | Empty state text, centred. Put it on a `.surface` |
 
 ### Still to add to `theme.css`
 
-These are needed by the screens below. Add them to `theme.css` when the first screen uses them, then mark them here.
+These are needed by the screens below. Add them to `theme.css` when the first screen uses them, then move them to the table above.
+
+Already in `theme.css`: `.field` (grid, gap 6px), `.label`, `.input` (padding 7px 10px; focus is a `--color-primary` border plus a 1px ring of the same colour), `.field-error`, and `.table` (header 12.5px muted on white with a `--color-line-strong` rule under it; rows 14px, hover `--color-paper`, no border under the last row).
 
 | Class | Spec |
 |---|---|
 | `.btn-danger` | Red background `--color-danger`, white text. Only for permanent delete and the confirm button in the delete dialog |
-| `.field` | Wraps a label, a control, and an error. Grid, gap `--space-1` |
-| `.label` | 13px, weight 600, `--color-ink` |
-| `.input` (input, select, textarea) | `--color-sheet`, 1px `--color-line-strong`, `--radius-sm`, padding 8px 12px. Focus: border `--color-primary` plus a 3px `--color-primary-soft` ring |
-| `.field-error` | 12px, `--color-danger`. The input in that field gets border `--color-danger` |
-| `.table` | Full width, collapsed borders. Header 13px muted on `--color-soft`. Rows 14px, border-bottom `--color-line`, hover `--color-soft`, pointer cursor when the row opens a ticket |
 | `.spinner` or loading text | Muted "Loading…" in a `.surface .empty`, until a real spinner exists |
 
 ## Layout
 
 ### App shell (every signed-in screen)
 
-- Top bar, full width, white (`--color-sheet`), border-bottom `--color-line`, height 56px.
-- Left: "Helpdesk" in 16px weight 700 `--color-primary`.
-- Then the nav links. Requester: My tickets, New ticket. Agent and admin: Inbox, Categories and tags, Activity log. The active link is `--color-primary` with a 2px bottom border in the same colour. Others are `--color-muted`.
-- Right: user name and role in `.muted`, then a `.btn .btn-small` "Sign out".
+- Top bar, full width, dark (`--color-bar`), height 52px, 14px text in `--color-bar-text`.
+- Left: a 22px `--color-primary` square with "H", then "Helpdesk" in white weight 650. It links to the home list.
+- Then the nav links. Requester: My tickets, New ticket. Agent and admin: Inbox, Categories and tags, Activity log. The active link is white with a 2px light teal (`#7fc4b8`) bottom border.
+- Right: user name, the role in a small outlined tag, then "Sign out" as an underlined text button.
+- Under 720px the nav moves to a second row and the name is hidden.
 - Below the bar, the view's `<main class="page">` on the `--color-paper` background.
 - One shell for all roles. Admin-only controls appear inside screens, not in a different layout.
 
@@ -138,9 +141,9 @@ Same order as the wireframes and `docs/components.md`.
 
 ### 1. Sign in
 
-- No app shell. A white `.surface` card centred in the page, width `min(420px, 100%)`, padding `--space-6`.
-- "Helpdesk" brand above the card in `--color-primary`.
-- Title "Sign in", then Email and Password `.field`s stacked with gap `--space-4`.
+- No app shell. A white `.surface .auth-card` centred in the page, width `min(400px, 100%)`, padding `--space-6`.
+- The brand (mark and "Helpdesk") is the first line inside the card.
+- Title "Sign in" with a one-line `.muted` subline, then Email and Password `.field`s stacked with gap `--space-4`.
 - Full-width `.btn-primary` "Sign in".
 - A wrong email or password shows a `.banner-error` above the fields, not under one field.
 - A link under the card: "No account? Register".
@@ -162,8 +165,8 @@ Same order as the wireframes and `docs/components.md`.
 ### 4. My tickets
 
 - Page header: "My tickets", count in `.muted`, `.btn-primary` "New ticket".
-- Filters row inside a `.surface` with padding `--space-4`: a search input (wider), then Status, Priority, Category, Area, Tag selects. CSS grid `1.6fr repeat(5, 1fr)`, gap `--space-3`. It wraps to two columns under 720px.
-- Below that, a `.surface` holding the ticket `.table` (columns: Title, Category, Priority, Status, Assignee). Title cell: title in weight 600, then `#id` and area in `.muted` on a second line. Assignee shows "Unassigned" in `.muted` when empty.
+- One `.surface` holds both the filters and the results. The filters are a bar at its top on `--color-paper` with a bottom border, padding `--space-4`: a search input, then Status, Priority, Category, Area, Tag selects, gap `--space-3`. "Clear filters" is a `.btn-link` on the same line as the Search label. It wraps to two columns under 720px.
+- Under the bar, in the same box, the ticket `.table` (columns: Title, Category, Priority, Status, Assignee). Title cell: title in weight 600, then `#id` (`.mono`) and area in `.muted` on a second line. Assignee shows "Unassigned" in `.muted` when empty. Loading and empty text sit in the same box.
 - `TicketCard` may be used instead of the table on narrow screens.
 - Pager under the table, right-aligned: `.btn .btn-small` Previous, "Page 1 of 3" in `.muted`, `.btn .btn-small` Next. Disabled buttons stay visible.
 - Empty result: `.surface .empty` "No tickets match these filters." Loading: `.surface .empty` "Loading tickets…". Fetch failure: `.banner-error`.
@@ -173,7 +176,7 @@ Same order as the wireframes and `docs/components.md`.
 - Page header: "New ticket", no primary action in the header.
 - One `.surface` panel, padding `--space-5`, max width 720px.
 - Fields stacked with gap `--space-4`: Title, Description (textarea, min height 140px), then a two-column row of Priority and Area, then Category (tree picker, children indented `--space-5`), Tags (checkbox list), Image (file input with a `.muted` hint "png, jpg, webp, up to 2 MB").
-- Priority can be a segmented control: three joined buttons, the selected one `--color-primary-soft` background with `--color-primary` text.
+- Priority is a segmented control: three joined buttons, the selected one `--color-primary-soft` background with `--color-primary` text.
 - Actions at the bottom, right-aligned: `.btn` "Cancel", `.btn-primary` "Create ticket".
 - Each invalid field shows `.field-error` under it. A server error shows `.banner-error` above the form.
 
@@ -185,7 +188,8 @@ Same order as the wireframes and `docs/components.md`.
 
 ### 7. Requester ticket
 
-- Panel 1 (`.surface`, padding `--space-5`): `#id` in `.muted`, `.page-title`, then a row with the status badge and the priority text. Then a meta grid (`dl`, columns `120px 1fr`, 14px, labels `--color-muted`): Category path, Tags, Area, Assignee. Then the description with a top divider, max width 65ch.
+- A "← My tickets" link above the panels. Page max width 800px.
+- Panel 1 (`.surface`, padding `--space-5`): `#id` in `.muted .mono`, `.page-title`, then a row with the status badge, a dot, and "Medium priority". Then a meta grid (`dl`, columns `120px 1fr`, 14px, labels `--color-muted`): Category path, Tags, Area, Assignee, with a divider under it. Empty values show "None", "Not given" or "Unassigned" in `.muted`. Then the description, max width 65ch.
 - The image, when there is one, sits under the description with `--radius-sm` and a `--color-line` border, max height 320px.
 - Panel 2 (`.surface`): "Comments" h2, then `CommentItem`s separated by `--color-line` borders, then `CommentComposer`.
 - A hidden comment shows "Comment removed" in `.muted` italics.
@@ -202,7 +206,7 @@ Same order as the wireframes and `docs/components.md`.
 
 - Same two panels as the requester ticket.
 - Above the panels, an actions bar in a `.surface`, padding `--space-4`: Assignee select, Status select, `.btn-primary` "Save". For an admin, a `.btn-danger` "Delete ticket" on the far right, separated from the other actions.
-- An internal note in the thread has a 3px left border in `--status-progress` and a small `.badge` "Internal" with `--status-progress-bg`. The composer has a Public / Internal segmented control above the textarea.
+- An internal note in the thread has a 3px left border in `--status-progress` and a small `.badge` "Internal" whose dot is `--status-progress`. The composer has a Public / Internal segmented control above the textarea.
 - Delete opens `ConfirmDialog`: a dark overlay `rgba(16, 24, 40, 0.5)`, a centred `.surface` dialog max width 440px, `--shadow`, title, message, then `.btn` "Cancel" and `.btn-danger` "Delete" right-aligned.
 
 ### 11. Categories and tags
@@ -225,7 +229,7 @@ Same order as the wireframes and `docs/components.md`.
 ### 13. Not found
 
 - App shell when signed in.
-- A centred `.surface .empty` with padding `--space-6`: "404" in 48px weight 700 `--color-primary`, "This page does not exist." and one `.btn-primary`: "Back to my tickets" for a requester, "Back to inbox" for an agent or admin.
+- A centred `.surface .empty` with padding `--space-6`: "404" in 40px `.mono` `--color-muted`, "This page does not exist." and one `.btn-primary`: "Back to my tickets" for a requester, "Back to inbox" for an agent or admin.
 
 ## States
 

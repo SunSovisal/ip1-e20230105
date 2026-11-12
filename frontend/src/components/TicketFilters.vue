@@ -87,14 +87,20 @@ function clear() {
 </script>
 
 <template>
-  <div class="surface panel">
+  <div class="bar">
     <div class="filters">
       <div class="field search">
-        <label class="label" for="ticket-search">Search title</label>
+        <div class="search-head">
+          <label class="label" for="ticket-search">Search title</label>
+          <button class="btn-link" type="button" :disabled="!hasActiveFilters" @click="clear">
+            Clear filters
+          </button>
+        </div>
         <input
           id="ticket-search"
           class="input"
           type="search"
+          placeholder="e.g. printer"
           :value="value.query"
           @input="onSearch"
         />
@@ -145,18 +151,15 @@ function clear() {
         />
       </div>
     </div>
-    <div class="actions">
-      <button class="btn btn-small" type="button" :disabled="!hasActiveFilters" @click="clear">
-        Clear filters
-      </button>
-    </div>
   </div>
 </template>
 
 <style scoped>
-.panel {
-  margin-bottom: var(--space-4);
+.bar {
   padding: var(--space-4);
+  background: var(--color-paper);
+  border-bottom: 1px solid var(--color-line);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .filters {
@@ -171,10 +174,11 @@ function clear() {
   gap: var(--space-3);
 }
 
-.actions {
+.search-head {
   display: flex;
-  justify-content: flex-end;
-  margin-top: var(--space-3);
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .field {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { catalogPath } from '@/lib/catalog'
+import { catalogTreeRows } from '@/lib/catalog'
 import { categories } from '@/mock/categories'
 import { tagNodes } from '@/mock/tags'
 import { useTicketStore } from '@/stores/tickets'
@@ -9,13 +9,17 @@ import { useRouter } from 'vue-router'
 
 type Field = 'title' | 'description' | 'categoryPath' | 'area' | 'image'
 
-const tags = tagNodes
-  .filter((node) => node.active)
-  .map((node) => ({
-    id: node.id,
-    label: catalogPath(node.id, tagNodes),
-    child: node.parentId != null,
-  }))
+const tags = catalogTreeRows(tagNodes.filter((node) => node.active)).map(({ node, depth }) => ({
+  id: node.id,
+  label: node.name,
+  depth,
+}))
+
+const priorities: { value: TicketPriority; label: string }[] = [
+  { value: 'LOW', label: 'Low' },
+  { value: 'MEDIUM', label: 'Medium' },
+  { value: 'HIGH', label: 'High' },
+]
 
 const router = useRouter()
 const store = useTicketStore()
@@ -42,7 +46,7 @@ function validate() {
   const title = draft.title.trim()
   const area = draft.area.trim()
 
-  if (title.length < 3 || title.length > 120) next.title = 'Title muse be 3 to 120 characters.'
+  if (title.length < 3 || title.length > 120) next.title = 'Title must be 3 to 120 characters.'
   if (draft.description.trim().length < 10)
     next.description = 'Description must be at least 10 characters.'
   if (!draft.categoryPath) next.categoryPath = 'Choose a category.'
@@ -95,12 +99,23 @@ async function onSubmit() {
 
 <template>
   <main class="page">
-    <h1 class="page-title head">New ticket</h1>
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">New ticket</h1>
+        <p class="muted">Say what is wrong and where. Staff will reply on the ticket.</p>
+      </div>
+    </div>
     <form class="surface form" novalidate @submit.prevent="onSubmit">
       <p v-if="serverError" class="banner banner-error">{{ serverError }}</p>
       <div class="field">
         <label class="label" for="title">Title</label>
-        <input id="title" v-model="draft.title" class="input" :class="{ invalid: errors.title }" />
+        <input
+          id="title"
+          v-model="draft.title"
+          class="input"
+          placeholder="e.g. Projector in J609 shows no signal"
+          :class="{ invalid: errors.title }"
+        />
         <p v-if="errors.title" class="field-error">{{ errors.title }}</p>
       </div>
       <div class="field">
@@ -111,24 +126,26 @@ async function onSubmit() {
           class="input description"
           :class="{ invalid: errors.description }"
         />
+        <p class="muted">What happened, what you expected, and what you already tried.</p>
         <p v-if="errors.description" class="field-error">{{ errors.description }}</p>
       </div>
       <div class="row">
-        <div class="field">
-          <label class="label" for="priority">Priority</label>
-          <select id="priority" v-model="draft.priority" class="input">
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-          </select>
-        </div>
+        <fieldset class="field plain">
+          <legend class="label">Priority</legend>
+          <div class="segmented">
+            <label v-for="option in priorities" :key="option.value">
+              <input v-model="draft.priority" type="radio" name="priority" :value="option.value" />
+              <span>{{ option.label }}</span>
+            </label>
+          </div>
+        </fieldset>
         <div class="field">
           <label class="label" for="area">Area <span class="muted">(optional)</span></label>
           <input
             id="area"
             v-model="draft.area"
             class="input"
-            placeholder="J609"
+            placeholder="e.g. J609"
             :class="{ invalid: errors.area }"
           />
           <p v-if="errors.area" class="field-error">{{ errors.area }}</p>
@@ -147,15 +164,22 @@ async function onSubmit() {
         </select>
         <p v-if="errors.categoryPath" class="field-error">{{ errors.categoryPath }}</p>
       </div>
-      <fieldset class="tags">
-        <legend class="label">Tags</legend>
-        <label v-for="tag in tags" :key="tag.id" class="check" :class="{ child: tag.child }">
-          <input v-model="draft.tagIds" type="checkbox" :value="tag.id" />
-          <span>{{ tag.label }}</span>
-        </label>
+      <fieldset class="field plain">
+        <legend class="label">Tags <span class="muted">(optional)</span></legend>
+        <div class="tags">
+          <label
+            v-for="tag in tags"
+            :key="tag.id"
+            class="check"
+            :style="{ paddingLeft: `calc(${tag.depth} * var(--space-5))` }"
+          >
+            <input v-model="draft.tagIds" type="checkbox" :value="tag.id" />
+            <span>{{ tag.label }}</span>
+          </label>
+        </div>
       </fieldset>
       <div class="field">
-        <label class="label" for="image">Error image <span class="muted">(optional)</span></label>
+        <label class="label" for="image">Screenshot <span class="muted">(optional)</span></label>
         <div class="file">
           <button class="btn btn-small" type="button" @click="pickImage">Choose file</button>
           <span class="muted">{{ imageName || 'No file chosen' }}</span>
@@ -168,8 +192,7 @@ async function onSubmit() {
             @change="onImage"
           />
         </div>
-        <p class="muted hint">png, jpg, jpeg, or webp. At most 2 MB.</p>
-        <p class="muted hint">To be implemented.</p>
+        <p class="muted">PNG, JPG, or WebP, up to 2 MB. The prototype checks the file but does not upload it yet.</p>
         <p v-if="errors.image" class="field-error">{{ errors.image }}</p>
       </div>
       <div class="actions">
@@ -181,54 +204,113 @@ async function onSubmit() {
     </form>
   </main>
 </template>
+
 <style scoped>
-.head {
-  margin-bottom: var(--space-5);
-}
 .form {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
   max-width: 720px;
   padding: var(--space-5);
 }
+
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4);
 }
+
+.plain {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.plain legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
 .description {
   min-height: 140px;
   resize: vertical;
 }
-.actions {
+
+.segmented {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-2);
 }
+
+.segmented label {
+  flex: 1;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented span {
+  display: block;
+  padding: 7px 10px;
+  border: 1px solid var(--color-line-strong);
+  margin-left: -1px;
+  text-align: center;
+  background: var(--color-sheet);
+  cursor: pointer;
+}
+
+.segmented label:first-child span {
+  margin-left: 0;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.segmented label:last-child span {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.segmented input:checked + span {
+  position: relative;
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  position: relative;
+}
+
 .tags {
-  margin: 0;
-  padding: 0;
-  border: 0;
   display: grid;
-  gap: var(--space-2);
+  gap: 6px;
 }
+
 .check {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  width: fit-content;
+  cursor: pointer;
 }
-.check.child {
-  padding-left: var(--space-5);
+
+.check input {
+  accent-color: var(--color-primary);
 }
+
 .file {
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
+
 .file:focus-within .btn {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
 .file-input {
   position: absolute;
   width: 1px;
@@ -240,7 +322,18 @@ async function onSubmit() {
   white-space: nowrap;
   border: 0;
 }
-.hint {
-  margin-top: var(--space-1);
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line);
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

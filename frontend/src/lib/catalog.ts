@@ -38,3 +38,33 @@ export function categoryAndDescendantIds(categoryId: number, nodes: CatalogNode[
   }
   return ids
 }
+
+export interface CatalogTreeRow {
+  node: CatalogNode
+  depth: number
+}
+
+/** Nodes in tree order: each parent followed by its children, depth-first. */
+export function catalogTreeRows(nodes: CatalogNode[]): CatalogTreeRow[] {
+  const rows: CatalogTreeRow[] = []
+  const seen = new Set<number>()
+  const ids = new Set(nodes.map((node) => node.id))
+  function visit(parentId: number | null, depth: number) {
+    for (const node of nodes) {
+      if (node.parentId !== parentId || seen.has(node.id)) continue
+      seen.add(node.id)
+      rows.push({ node, depth })
+      visit(node.id, depth + 1)
+    }
+  }
+  visit(null, 0)
+  // Orphans whose parent is missing still show, at the top level.
+  for (const node of nodes) {
+    if (!seen.has(node.id) && (node.parentId == null || !ids.has(node.parentId))) {
+      seen.add(node.id)
+      rows.push({ node, depth: 0 })
+      visit(node.id, 1)
+    }
+  }
+  return rows
+}
