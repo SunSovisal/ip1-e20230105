@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { tickets } from '@/mock/tickets'
+import logo from '@/assets/logo.png'
 import { useAuthStore } from '@/stores/auth'
-import { onMounted } from 'vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
@@ -27,12 +26,14 @@ async function onSubmit() {
 }
 </script>
 
-
 <template>
   <main class="auth-page">
-    <p class="brand">Helpdesk</p>
-    <form class="surface card" @submit.prevent="onSubmit">
-      <h1 class="page-title">Sign in</h1>
+    <form class="surface auth-card" @submit.prevent="onSubmit">
+      <p class="auth-brand"><img class="logo" :src="logo" alt="ITC" width="40" height="40" />Helpdesk</p>
+      <div>
+        <h1 class="page-title">Sign in</h1>
+        <p class="muted">Use the email you registered with.</p>
+      </div>
       <p v-if="auth.error" class="banner banner-error">{{ auth.error }}</p>
       <label class="field">
         <span class="label">Email</span>
@@ -50,34 +51,6 @@ async function onSubmit() {
       </label>
       <button class="btn btn-primary" type="submit" :disabled="submitting">Sign in</button>
     </form>
-    <p class="switch">No account? <RouterLink :to="{ name: 'register' }">Register</RouterLink></p>
+    <p class="auth-switch">No account? <RouterLink :to="{ name: 'register' }">Register</RouterLink></p>
   </main>
 </template>
-<style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: var(--space-4);
-  padding: var(--space-6) var(--space-4);
-}
-.brand {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-.card {
-  width: min(420px, 100%);
-  padding: var(--space-6);
-  display: grid;
-  gap: var(--space-4);
-}
-.card .btn-primary {
-  width: 100%;
-  justify-content: center;
-}
-.switch {
-  font-size: 14px;
-}
-</style>

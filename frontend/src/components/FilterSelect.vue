@@ -133,7 +133,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
   border: 1px solid var(--color-line-strong);
   border-radius: var(--radius-sm);
   background: var(--color-sheet);
-  padding: 8px 12px;
+  padding: 7px 10px;
   text-align: left;
   cursor: pointer;
 }
@@ -147,7 +147,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
 .trigger:focus-visible {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .chevron {

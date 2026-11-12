@@ -30,8 +30,9 @@ const emit = defineEmits<{
           <button class="title-btn" type="button" @click.stop="emit('open', ticket.id)">
             {{ ticket.title }}
           </button>
-          <div class="muted">
-            #{{ ticket.id }}<template v-if="ticket.area"> · {{ ticket.area }}</template>
+          <div class="muted sub">
+            <span class="mono">#{{ ticket.id }}</span
+            ><template v-if="ticket.area"> · {{ ticket.area }}</template>
           </div>
         </td>
         <td v-if="variant === 'inbox'">
@@ -61,11 +62,20 @@ const emit = defineEmits<{
 <style scoped>
 .title-btn {
   border: 0;
+  color: var(--color-ink);
   background: transparent;
   padding: 0;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
+}
+
+tr:hover .title-btn {
+  color: var(--color-primary);
+}
+
+.sub {
+  margin-top: 2px;
 }
 
 .title-btn:focus-visible {

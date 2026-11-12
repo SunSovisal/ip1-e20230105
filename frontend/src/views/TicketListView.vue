@@ -68,57 +68,50 @@ onMounted(() => store.loadTickets())
         <h1 class="page-title">My tickets</h1>
         <p v-if="!loading && !error" class="muted">
           {{ filtered.length }} {{ filtered.length === 1 ? 'ticket' : 'tickets' }}
+          <template v-if="filtered.length !== tickets.length">of {{ tickets.length }}</template>
         </p>
       </div>
       <RouterLink class="btn btn-primary" :to="{ name: 'ticket-new' }">New ticket</RouterLink>
     </div>
 
-    <TicketFilters
-      :value="filters"
-      :categories="categories"
-      :tags="tags"
-      :areas="areas"
-      @update:value="onFilters"
-    />
+    <div class="surface board">
+      <TicketFilters
+        :value="filters"
+        :categories="categories"
+        :tags="tags"
+        :areas="areas"
+        @update:value="onFilters"
+      />
 
-    <p v-if="error" class="banner banner-error">{{ error }}</p>
-    <div v-else-if="loading" class="surface empty">Loading tickets…</div>
-    <div v-else-if="filtered.length === 0" class="surface empty">
-      No tickets match these filters.
+      <p v-if="error" class="banner banner-error inset">{{ error }}</p>
+      <div v-else-if="loading" class="empty">Loading tickets…</div>
+      <div v-else-if="filtered.length === 0" class="empty">No tickets match these filters.</div>
+      <template v-else>
+        <div class="table-wrap">
+          <TicketTable :tickets="pageTickets" variant="mine" @open="onOpen" />
+        </div>
+        <div class="cards">
+          <TicketCard
+            v-for="ticket in pageTickets"
+            :key="ticket.id"
+            :ticket="ticket"
+            @open="onOpen"
+          />
+        </div>
+      </template>
     </div>
-    <template v-else>
-      <div class="surface table-wrap">
-        <TicketTable :tickets="pageTickets" variant="mine" @open="onOpen" />
-      </div>
-      <div class="cards">
-        <TicketCard
-          v-for="ticket in pageTickets"
-          :key="ticket.id"
-          :ticket="ticket"
-          @open="onOpen"
-        />
-      </div>
-    </template>
 
     <TicketPager v-if="!loading && !error" :page="page" :page-count="pageCount" @change="onPage" />
   </main>
 </template>
 
 <style scoped>
-.page {
-  max-width: 1200px;
-}
-
-.page-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+.inset {
+  margin: var(--space-4);
 }
 
 .table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .cards {
@@ -126,17 +119,13 @@ onMounted(() => store.loadTickets())
 }
 
 @media (max-width: 720px) {
-  .page-head {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .table-wrap {
     display: none;
   }
 
   .cards {
     display: block;
+    padding: var(--space-3);
   }
 }
 </style>
