@@ -20,18 +20,21 @@ The wireframes in `docs/wireframes` give the layout: what is on each screen and 
 
 | Variable | Value | Use |
 |---|---|---|
-| `--color-primary` | `#1f5f56` | Brand (deep teal). Primary buttons, links, focus ring |
-| `--color-primary-hover` | `#174a43` | Primary button hover |
-| `--color-primary-soft` | `#e3efec` | Selected segment, selected row |
-| `--color-ink` | `#1d2221` | Body text, headings |
-| `--color-muted` | `#5e6664` | Secondary text, labels, timestamps |
-| `--color-line` | `#e2e1dc` | Card borders, dividers, table rows |
-| `--color-line-strong` | `#c8c7c0` | Inputs, secondary buttons, table header rule |
-| `--color-paper` | `#f7f6f3` | Page background (warm grey), filter bar, row hover |
+| `--color-primary` | `#0c4da2` | Brand (ITC blue, sampled from the school logo). Primary buttons, links, focus ring |
+| `--color-primary-hover` | `#093d82` | Primary button hover |
+| `--color-primary-soft` | `#e7eef9` | Selected segment, selected row, picked tag |
+| `--color-ink` | `#1a2130` | Body text, headings |
+| `--color-muted` | `#5a6474` | Secondary text, labels, timestamps |
+| `--color-placeholder` | `#969eab` | Input placeholders |
+| `--color-line` | `#e0e4eb` | Card borders, dividers, table rows |
+| `--color-line-strong` | `#c4cad4` | Inputs, secondary buttons, table header rule |
+| `--color-paper` | `#f5f7fa` | Page background (cool grey), filter bar, row hover |
 | `--color-sheet` | `#ffffff` | Cards, panels, inputs |
-| `--color-soft` | `#f0efeb` | Button hover, subtle fills |
-| `--color-bar` | `#1d2221` | Top bar background |
-| `--color-bar-text` | `#c9cfcd` | Top bar links and user text |
+| `--color-soft` | `#eef1f6` | Button hover, subtle fills |
+| `--color-bar` | `#0f2140` | Top bar background (deep navy) |
+| `--color-bar-text` | `#c2cde0` | Top bar links and user text |
+| `--color-bar-accent` | `#8cb6f0` | Active nav underline and focus outline in the top bar |
+| `--color-bar-line` | `#3a4c6b` | Role tag border in the top bar |
 | `--color-danger` | `#b42318` | Errors, delete actions |
 | `--color-danger-soft` | `#fdf0ee` | Error banner background |
 
@@ -124,8 +127,8 @@ Already in `theme.css`: `.field` (grid, gap 6px), `.label`, `.input` (padding 7p
 ### App shell (every signed-in screen)
 
 - Top bar, full width, dark (`--color-bar`), height 52px, 14px text in `--color-bar-text`.
-- Left: a 22px `--color-primary` square with "H", then "Helpdesk" in white weight 650. It links to the home list.
-- Then the nav links. Requester: My tickets, New ticket. Agent and admin: Inbox, Categories and tags, Activity log. The active link is white with a 2px light teal (`#7fc4b8`) bottom border.
+- Left: the ITC logo (32px, round, white behind it), then "Helpdesk" in white weight 650. It links to the home list.
+- Then the nav links. Requester: My tickets, New ticket. Agent and admin: Inbox, Categories and tags, Activity log. The active link is white with a 2px `--color-bar-accent` bottom border.
 - Right: user name, the role in a small outlined tag, then "Sign out" as an underlined text button.
 - Under 720px the nav moves to a second row and the name is hidden.
 - Below the bar, the view's `<main class="page">` on the `--color-paper` background.
@@ -142,7 +145,7 @@ Same order as the wireframes and `docs/components.md`.
 ### 1. Sign in
 
 - No app shell. A white `.surface .auth-card` centred in the page, width `min(400px, 100%)`, padding `--space-6`.
-- The brand (mark and "Helpdesk") is the first line inside the card.
+- The brand (the ITC logo at 40px, round, then "Helpdesk") is the first line inside the card.
 - Title "Sign in" with a one-line `.muted` subline, then Email and Password `.field`s stacked with gap `--space-4`.
 - Full-width `.btn-primary` "Sign in".
 - A wrong email or password shows a `.banner-error` above the fields, not under one field.
@@ -175,9 +178,13 @@ Same order as the wireframes and `docs/components.md`.
 
 - Page header: "New ticket", no primary action in the header.
 - One `.surface` panel, padding `--space-5`, max width 720px.
-- Fields stacked with gap `--space-4`: Title, Description (textarea, min height 140px), then a two-column row of Priority and Area, then Category (tree picker, children indented `--space-5`), Tags (checkbox list), Image (file input with a `.muted` hint "png, jpg, webp, up to 2 MB").
+- Kept short enough to fit a laptop screen without scrolling. Fields stacked with gap `--space-4`: Title, Description (textarea, min height 110px, the "what happened, what you expected, what you tried" hint is its placeholder), then one three-column row of Priority, Category (single `CatalogPicker`), and Area, then Tags.
+- The row collapses to one column under 640px.
 - Priority is a segmented control: three joined buttons, the selected one `--color-primary-soft` background with `--color-primary` text.
-- Actions at the bottom, right-aligned: `.btn` "Cancel", `.btn-primary` "Create ticket".
+- Category and Tags use `CatalogPicker`, so neither opens the native OS menu.
+- Category: looks like a select (text and a chevron, no pills). The chosen path is shown as the value. The dropdown has the parent nodes as small uppercase `--color-muted` headings that cannot be picked, with their leaf categories indented under them. Error state is a `--color-danger` border.
+- Tags: one input-sized box that holds the chosen tags as removable pills (`--color-primary-soft`, `--color-primary` border and text, full path such as `Student / Year 1`, then a `×` button) followed by an "Add tag…" text input. On focus a dropdown opens under it (`--shadow`, max height 240px, scrolls): active tags in tree order, children indented `--space-4`, the highlighted row `--color-soft`, chosen rows in `--color-primary` with a ✓. Typing filters by full path and shows the matches flat. The box stays one line tall however many tags exist.
+- Action row at the bottom, above a `--color-line` top border: on the left a `.btn .btn-small` "Attach screenshot" with the file name, or the `.muted` hint "Optional · PNG, JPG, WebP, 2 MB", next to it; on the right `.btn` "Cancel", `.btn-primary` "Create ticket".
 - Each invalid field shows `.field-error` under it. A server error shows `.banner-error` above the form.
 
 ### 6. Edit ticket

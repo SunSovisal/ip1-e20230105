@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { catalogTreeRows } from '@/lib/catalog'
-import { categories } from '@/mock/categories'
+import CatalogPicker from '@/components/CatalogPicker.vue'
+import { catalogPath, categoryIdForPath } from '@/lib/catalog'
+import { categoryNodes } from '@/mock/categories'
 import { tagNodes } from '@/mock/tags'
 import { useTicketStore } from '@/stores/tickets'
 import type { TicketPriority } from '@/types/ticket'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 type Field = 'title' | 'description' | 'categoryPath' | 'area' | 'image'
-
-const tags = catalogTreeRows(tagNodes.filter((node) => node.active)).map(({ node, depth }) => ({
-  id: node.id,
-  label: node.name,
-  depth,
-}))
 
 const priorities: { value: TicketPriority; label: string }[] = [
   { value: 'LOW', label: 'Low' },
@@ -31,6 +26,14 @@ const draft = reactive({
   categoryPath: '',
   area: '',
   tagIds: [] as number[],
+})
+
+// The draft keeps the path the store expects; the picker works with ids.
+const categoryId = computed<number | null>({
+  get: () => (draft.categoryPath ? categoryIdForPath(draft.categoryPath, categoryNodes) : null),
+  set: (id) => {
+    draft.categoryPath = id == null ? '' : catalogPath(id, categoryNodes)
+  },
 })
 
 const imageName = ref('')
@@ -124,9 +127,9 @@ async function onSubmit() {
           id="description"
           v-model="draft.description"
           class="input description"
+          placeholder="What happened, what you expected, and what you already tried."
           :class="{ invalid: errors.description }"
         />
-        <p class="muted">What happened, what you expected, and what you already tried.</p>
         <p v-if="errors.description" class="field-error">{{ errors.description }}</p>
       </div>
       <div class="row">
@@ -140,6 +143,18 @@ async function onSubmit() {
           </div>
         </fieldset>
         <div class="field">
+          <label class="label" for="category">Category</label>
+          <CatalogPicker
+            id="category"
+            v-model="categoryId"
+            :nodes="categoryNodes"
+            leaf-only
+            :invalid="!!errors.categoryPath"
+            placeholder="Choose a category"
+          />
+          <p v-if="errors.categoryPath" class="field-error">{{ errors.categoryPath }}</p>
+        </div>
+        <div class="field">
           <label class="label" for="area">Area <span class="muted">(optional)</span></label>
           <input
             id="area"
@@ -152,54 +167,47 @@ async function onSubmit() {
         </div>
       </div>
       <div class="field">
-        <label class="label" for="category">Category</label>
-        <select
-          id="category"
-          v-model="draft.categoryPath"
-          class="input"
-          :class="{ invalid: errors.categoryPath }"
-        >
-          <option value="" disabled>Choose a category</option>
-          <option v-for="path in categories" :key="path" :value="path">{{ path }}</option>
-        </select>
-        <p v-if="errors.categoryPath" class="field-error">{{ errors.categoryPath }}</p>
+        <label class="label" for="tags">Tags <span class="muted">(optional)</span></label>
+        <CatalogPicker
+          id="tags"
+          v-model="draft.tagIds"
+          :nodes="tagNodes"
+          multiple
+          placeholder="Add tag…"
+        />
       </div>
-      <fieldset class="field plain">
-        <legend class="label">Tags <span class="muted">(optional)</span></legend>
-        <div class="tags">
-          <label
-            v-for="tag in tags"
-            :key="tag.id"
-            class="check"
-            :style="{ paddingLeft: `calc(${tag.depth} * var(--space-5))` }"
+      <div class="actions">
+        <div class="attach">
+          <label class="visually-hidden" for="image">Screenshot (optional)</label>
+          <button
+            class="btn btn-small"
+            type="button"
+            title="PNG, JPG, or WebP, up to 2 MB"
+            aria-describedby="image-hint"
+            @click="pickImage"
           >
-            <input v-model="draft.tagIds" type="checkbox" :value="tag.id" />
-            <span>{{ tag.label }}</span>
-          </label>
-        </div>
-      </fieldset>
-      <div class="field">
-        <label class="label" for="image">Screenshot <span class="muted">(optional)</span></label>
-        <div class="file">
-          <button class="btn btn-small" type="button" @click="pickImage">Choose file</button>
-          <span class="muted">{{ imageName || 'No file chosen' }}</span>
+            Attach screenshot
+          </button>
+          <span id="image-hint" class="muted file-name">{{
+            imageName || 'Optional · PNG, JPG, WebP, 2 MB'
+          }}</span>
           <input
             id="image"
             ref="imageInput"
-            class="file-input"
+            class="visually-hidden"
             type="file"
+            tabindex="-1"
             accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp"
             @change="onImage"
           />
+          <p v-if="errors.image" class="field-error">{{ errors.image }}</p>
         </div>
-        <p class="muted">PNG, JPG, or WebP, up to 2 MB. The prototype checks the file but does not upload it yet.</p>
-        <p v-if="errors.image" class="field-error">{{ errors.image }}</p>
-      </div>
-      <div class="actions">
-        <RouterLink class="btn" :to="{ name: 'tickets' }">Cancel</RouterLink>
-        <button class="btn btn-primary" type="submit" :disabled="submitting">
-          {{ submitting ? 'Creating…' : 'Create ticket' }}
-        </button>
+        <div class="buttons">
+          <RouterLink class="btn" :to="{ name: 'tickets' }">Cancel</RouterLink>
+          <button class="btn btn-primary" type="submit" :disabled="submitting">
+            {{ submitting ? 'Creating…' : 'Create ticket' }}
+          </button>
+        </div>
       </div>
     </form>
   </main>
@@ -208,15 +216,16 @@ async function onSubmit() {
 <style scoped>
 .form {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-4);
   max-width: 720px;
   padding: var(--space-5);
 }
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto minmax(0, 1.5fr) minmax(0, 1fr);
   gap: var(--space-4);
+  align-items: start;
 }
 
 .plain {
@@ -232,7 +241,7 @@ async function onSubmit() {
 }
 
 .description {
-  min-height: 140px;
+  min-height: 110px;
   resize: vertical;
 }
 
@@ -283,35 +292,28 @@ async function onSubmit() {
   position: relative;
 }
 
-.tags {
-  display: grid;
-  gap: 6px;
-}
-
-.check {
+.attach {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
-  width: fit-content;
-  cursor: pointer;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
 }
 
-.check input {
-  accent-color: var(--color-primary);
+.attach .field-error {
+  flex-basis: 100%;
+  margin: 0;
 }
 
-.file {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+.file-name {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
 }
 
-.file:focus-within .btn {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.file-input {
+.visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -325,13 +327,21 @@ async function onSubmit() {
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-line);
 }
 
-@media (max-width: 560px) {
+.buttons {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
   .row {
     grid-template-columns: 1fr;
   }

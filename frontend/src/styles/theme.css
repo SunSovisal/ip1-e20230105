@@ -1,18 +1,22 @@
 :root {
-  --color-primary: #1f5f56;
-  --color-primary-hover: #174a43;
-  --color-primary-soft: #e3efec;
+  /* ITC blue, sampled from src/assets/logo.png */
+  --color-primary: #0c4da2;
+  --color-primary-hover: #093d82;
+  --color-primary-soft: #e7eef9;
 
-  --color-ink: #1d2221;
-  --color-muted: #5e6664;
-  --color-line: #e2e1dc;
-  --color-line-strong: #c8c7c0;
-  --color-paper: #f7f6f3;
+  --color-ink: #1a2130;
+  --color-muted: #5a6474;
+  --color-placeholder: #969eab;
+  --color-line: #e0e4eb;
+  --color-line-strong: #c4cad4;
+  --color-paper: #f5f7fa;
   --color-sheet: #ffffff;
-  --color-soft: #f0efeb;
+  --color-soft: #eef1f6;
 
-  --color-bar: #1d2221;
-  --color-bar-text: #c9cfcd;
+  --color-bar: #0f2140;
+  --color-bar-text: #c2cde0;
+  --color-bar-accent: #8cb6f0;
+  --color-bar-line: #3a4c6b;
 
   --color-danger: #b42318;
   --color-danger-soft: #fdf0ee;
@@ -36,7 +40,7 @@
   --space-6: 32px;
   --radius-sm: 4px;
   --radius: 6px;
-  --shadow: 0 6px 20px rgba(29, 34, 33, 0.12);
+  --shadow: 0 6px 20px rgba(15, 33, 64, 0.12);
   --page-max: 1080px;
 }
 
@@ -286,14 +290,14 @@ select.input {
   color-scheme: light;
   appearance: none;
   padding-right: 32px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235e6664' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235a6474' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 11px center;
   cursor: pointer;
 }
 
 .input::placeholder {
-  color: #9a9f9d;
+  color: var(--color-placeholder);
 }
 
 .input:focus {
@@ -385,16 +389,10 @@ select.input {
   margin-bottom: var(--space-2);
 }
 
-.auth-brand .mark {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
+.auth-brand .logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .auth-card .banner {

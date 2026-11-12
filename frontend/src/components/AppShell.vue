@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import logo from '@/assets/logo.png'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -19,7 +20,7 @@ const roleLabel = computed(() => {
 <template>
   <header class="topbar">
     <RouterLink class="brand" :to="{ name: 'tickets' }">
-      <span class="mark" aria-hidden="true">H</span>
+      <img class="logo" :src="logo" alt="ITC" width="32" height="32" />
       Helpdesk
     </RouterLink>
     <nav class="nav">
@@ -58,15 +59,11 @@ const roleLabel = computed(() => {
   text-decoration: none;
 }
 
-.mark {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  font-size: 12px;
-  font-weight: 700;
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
 }
 
 .nav {
@@ -90,7 +87,7 @@ const roleLabel = computed(() => {
 
 .nav a.router-link-exact-active {
   color: #fff;
-  border-bottom-color: #7fc4b8;
+  border-bottom-color: var(--color-bar-accent);
 }
 
 .user {
@@ -103,7 +100,7 @@ const roleLabel = computed(() => {
 .role {
   margin-left: 4px;
   padding: 1px 6px;
-  border: 1px solid #4a5250;
+  border: 1px solid var(--color-bar-line);
   border-radius: var(--radius-sm);
   font-size: 12px;
 }
@@ -125,7 +122,7 @@ const roleLabel = computed(() => {
 .brand:focus-visible,
 .nav a:focus-visible,
 .signout:focus-visible {
-  outline: 2px solid #7fc4b8;
+  outline: 2px solid var(--color-bar-accent);
   outline-offset: 2px;
 }
 

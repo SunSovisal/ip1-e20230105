@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import logo from '@/assets/logo.png'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
@@ -29,7 +30,7 @@ async function onSubmit() {
 <template>
   <main class="auth-page">
     <form class="surface auth-card" @submit.prevent="onSubmit">
-      <p class="auth-brand"><span class="mark" aria-hidden="true">H</span>Helpdesk</p>
+      <p class="auth-brand"><img class="logo" :src="logo" alt="ITC" width="40" height="40" />Helpdesk</p>
       <div>
         <h1 class="page-title">Register</h1>
         <p class="muted">New accounts are requester accounts.</p>

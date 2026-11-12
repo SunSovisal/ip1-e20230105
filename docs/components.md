@@ -20,6 +20,7 @@ These are used on more than one screen. A later screen names them in its tree an
 | Pager | page, pageCount | change (page) | nothing |
 | TicketForm | draft, errors, categories, tags, mode (create or edit), imageName | update:draft, submit, cancel | nothing |
 | TicketCard | ticket | open (ticket id) | nothing |
+| CatalogPicker | nodes (catalog nodes), modelValue (one id, or a list of ids when multiple), multiple, leafOnly, invalid | update:modelValue | the search text, whether the list is open, the highlighted row |
 | KanbanColumn | status, tickets | open (ticket id), move (ticket id, status) | nothing |
 | CommentItem | comment, canEdit, canHide | save (id, body), hide (id) | editing, and the draft while the editor is open |
 | CommentComposer | allowInternal | submit (body, visibility) | the unsent text. If internal notes are allowed, also the public or internal choice |
@@ -29,6 +30,8 @@ These are used on more than one screen. A later screen names them in its tree an
 AppShell shows My tickets and New ticket for a requester. It shows Inbox, Categories and tags, and Activity log for an agent or admin.
 
 TicketTable variant mine shows title, category, priority, status, and assignee. Variant inbox also shows the requester name and email. When a ticket has an area, it is under the title.
+
+CatalogPicker lists only active nodes, in tree order. Tags use it with multiple. Category uses it as a single choice with leafOnly, so a parent such as Hardware is a heading and cannot be picked. Arrow keys move and skip headings, Enter picks the highlighted row and never submits the form, Backspace on an empty search removes the last tag (multiple only), Esc closes the list.
 
 TicketForm in create mode edits title, description, priority, category, tags, area, and one optional image. In edit mode it edits title, description, category, tags, and area. The image name is shown and cannot be changed.
 
